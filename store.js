@@ -40,7 +40,7 @@
   const state = {
     patients: new Map(), visits: new Map(), appointments: new Map(), cloud: null, user: null,
     syncing: false, lastSync: null, pending: 0, error: null,
-    settings: { textSize: 'normal', hvThreshold: 4, printLang: 'en', theme: 'light' },
+    settings: { textSize: 'normal', hvThreshold: 4, printLang: 'en' },
   };
   const listeners = new Set();
   const emit = () => listeners.forEach(f => { try { f(); } catch (e) { console.error(e); } });

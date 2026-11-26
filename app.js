@@ -56,12 +56,6 @@
     if (sz === 'normal') delete document.documentElement.dataset.size;
     else document.documentElement.dataset.size = sz;
   }
-  function applyTheme() {
-    const mode = (S.state.settings && S.state.settings.theme) || 'light';
-    const isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    if (isDark) document.documentElement.dataset.theme = 'dark';
-    else delete document.documentElement.dataset.theme;
-  }
   function updateBanner() {
     return ui.swWaiting ? `<button type="button" class="update-bar" data-act="applyUpdate">New version available · Tap to update<span class="pill">Update</span></button>` : '';
   }
@@ -459,15 +453,10 @@
     const cfg = st.settings || {};
     const sz = cfg.textSize || 'normal';
     const hvT = cfg.hvThreshold || 4;
-    const th = cfg.theme || 'light';
     return `<div class="top"><span style="width:56px"></span><div class="ttl">Settings</div><span style="width:56px"></span></div>
       ${updateBanner()}
       <div class="card" style="margin-bottom:12px">
-        <div class="flabel" style="margin-bottom:8px">Appearance</div>
-        <div class="seg sm">${[['light', 'Light'], ['dark', 'Dark'], ['auto', 'Auto']].map(([k, l]) =>
-          `<button type="button" class="${th === k ? 'on' : ''}" data-act="theme" data-v="${k}">${l}</button>`
-        ).join('')}</div>
-        <div class="flabel" style="margin:16px 0 8px">Text size</div>
+        <div class="flabel" style="margin-bottom:8px">Text size</div>
         <div class="seg sm">${[['normal', 'Normal'], ['large', 'Large'], ['xlarge', 'Extra large']].map(([k, l]) =>
           `<button type="button" class="${sz === k ? 'on' : ''}" data-act="textSize" data-v="${k}">${l}</button>`
         ).join('')}</div>
@@ -697,7 +686,6 @@
       case 'nav': go(el.dataset.to); break;
       case 'settings': go('/settings'); break;
       case 'textSize': await S.setSetting('textSize', el.dataset.v); applyTextSize(); break;
-      case 'theme': await S.setSetting('theme', el.dataset.v); applyTheme(); break;
       case 'hvThresh': await S.setSetting('hvThreshold', Number(el.dataset.v)); break;
       case 'applyUpdate': if (ui.swWaiting) { ui.swWaiting.postMessage({ type: 'SKIP_WAITING' }); } break;
       case 'showPending': {
@@ -814,8 +802,6 @@
   (async function boot() {
     await S.load();
     applyTextSize();
-    applyTheme();
-    if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
     try { await S.initCloud(); } catch (e) { console.warn('Cloud unavailable (offline?)', e); }
     render();
     S.sync();
