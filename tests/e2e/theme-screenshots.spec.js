@@ -13,6 +13,8 @@ test('capture dark theme screenshots at 390x844', async ({ page }) => {
   page.on('pageerror', err => errors.push(err.message));
 
   await page.goto('/');
+  await page.waitForSelector('a[href="app.html"]');
+  await page.click('a[href="app.html"]');
   await page.waitForSelector('.login h1');
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: path.join(OUT_DIR, 'signin-dark.png') });
@@ -22,7 +24,7 @@ test('capture dark theme screenshots at 390x844', async ({ page }) => {
     body: `window.ENDO_CONFIG = { supabaseUrl: '', supabaseAnonKey: '', clinic: { doctorName: 'Dr. Vijay Shripad Dhawle', qualifications: ['DCH DNB PEDIATRICS'], regdNo: '81887', address: 'Latur Diabetes Centre, Latur', phones: 'Tel. 02382-250213', greetingName: 'Dr. Dhawle' } };`,
   }));
 
-  await page.goto('/');
+  await page.goto('/app.html');
   await page.waitForSelector('.hello h1');
 
   const pid = await page.evaluate(async () => {
@@ -59,12 +61,12 @@ test('capture dark theme screenshots at 390x844', async ({ page }) => {
   await checkOverflow();
   await page.screenshot({ path: path.join(OUT_DIR, 'home-dark.png') });
 
-  await page.goto(`/#/p/${pid}`);
+  await page.goto(`/app.html#/p/${pid}`);
   await page.waitForSelector('.hero .nm');
   await checkOverflow();
   await page.screenshot({ path: path.join(OUT_DIR, 'patient-dark.png') });
 
-  await page.goto('/#/settings');
+  await page.goto('/app.html#/settings');
   await page.waitForSelector('.settings');
   await checkOverflow();
   await page.screenshot({ path: path.join(OUT_DIR, 'settings-dark.png') });

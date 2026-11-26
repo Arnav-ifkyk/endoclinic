@@ -111,7 +111,10 @@ nav .btn{min-height:44px;padding:0 18px;font-size:15px}
 footer{padding:34px 0 46px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between}
 @media (max-width:900px){
-  nav .links{display:none}nav .btn{margin-left:auto}
+  nav .links{display:none}
+  nav .wrap{gap:10px}
+  nav .nav-acts{margin-left:auto;display:flex;gap:8px;align-items:center}
+  nav .btn{min-height:40px;padding:0 12px;font-size:14px}
   .hero .wrap,.doctor .wrap,.visit .wrap{grid-template-columns:minmax(0,1fr)}
   .arc{max-height:380px;order:-1}
   .stage{grid-template-columns:minmax(0,1fr);gap:0}
@@ -127,7 +130,10 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
 <nav><div class="wrap">
   <a href="#top" aria-label="Peds Endo Clinic home"><img src="logo.png" alt="Peds Endo Clinic"></a>
   <div class="links"><a href="#conditions">What we treat</a><a href="#when">When to visit</a><a href="#doctor">Doctor</a><a href="#visit">Visit</a></div>
-  <a class="btn dark" href="tel:+919850631399"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
+  <div class="nav-acts" style="display:flex;gap:10px;align-items:center;margin-left:auto">
+    <a class="btn ghost" href="app.html">Doctor login</a>
+    <a class="btn dark" href="tel:+919850631399"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
+  </div>
 </div></nav>
 
 <header class="hero" id="top">
@@ -210,7 +216,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
 </div></section>
 
 <footer><div class="wrap">
-  <div>© Peds Endo Clinic, Latur · Dr. Vijay Shripad Dhawle</div>
+  <div>© Peds Endo Clinic, Latur · Dr. Vijay Shripad Dhawle · <a href="app.html" style="text-decoration:underline;text-underline-offset:3px">Doctor login</a></div>
   <div>This page explains common problems. It is not a diagnosis. In an emergency, go to the nearest hospital.</div>
 </div></footer>
 

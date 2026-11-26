@@ -15,7 +15,7 @@ test('appointments tab, calendar, and booking for existing and new patients', as
     body: `window.ENDO_CONFIG = { supabaseUrl: '', supabaseAnonKey: '', clinic: { doctorName: 'Dr. Vijay Shripad Dhawle', greetingName: 'Dr. Dhawle' } };`,
   }));
 
-  await page.goto('/');
+  await page.goto('/app.html');
   await page.waitForSelector('.hello h1');
 
   await page.evaluate(async () => {

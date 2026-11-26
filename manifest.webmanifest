@@ -1,7 +1,7 @@
 {
   "name": "Peds Endo Clinic",
   "short_name": "Endo Clinic",
-  "start_url": "./",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
