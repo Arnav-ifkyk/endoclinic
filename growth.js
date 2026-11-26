@@ -135,13 +135,34 @@
     return v + suf;
   }
 
+  // Compute effective clinical age (with preterm correction under 2 y chronological age)
+  function ageContext(patient, date) {
+    const chronoAge = ageYears(patient && patient.dob, date);
+    if (chronoAge == null) return { age: null, ageText: '—', chronoAge: null, chronoAgeText: '—', isCorrected: false, preTermCga: false };
+    const chronoAgeText = ageText(chronoAge);
+    const b = (patient && patient.birth) || {};
+    const gw = num(b.gestWeeks);
+    if (b.term === 'Preterm' && gw != null && gw >= 22 && gw < 37 && chronoAge < 2) {
+      const corrY = (40 - gw) * 7 / 365.25;
+      const corrected = chronoAge - corrY;
+      if (corrected < 0) {
+        return { age: null, ageText: 'Pre-term (<40 wk CGA)', chronoAge, chronoAgeText, correctedAge: corrected, isCorrected: true, preTermCga: true };
+      }
+      return { age: corrected, ageText: ageText(corrected), chronoAge, chronoAgeText, correctedAge: corrected, isCorrected: true, preTermCga: false };
+    }
+    return { age: chronoAge, ageText: chronoAgeText, chronoAge, chronoAgeText, correctedAge: null, isCorrected: false, preTermCga: false };
+  }
+
   // Compute all derived figures for one visit
   function analyse(patient, visit) {
-    const age = ageYears(patient.dob, visit.date);
+    const ac = ageContext(patient, visit.date);
+    const age = ac.age;
     const h = num(visit.height), w = num(visit.weight);
     const b = bmi(h, w);
     const out = {
-      age, ageText: ageText(age), height: h, weight: w, bmi: b,
+      age, ageText: ac.ageText, chronoAge: ac.chronoAge, chronoAgeText: ac.chronoAgeText,
+      isCorrected: ac.isCorrected, preTermCga: ac.preTermCga,
+      height: h, weight: w, bmi: b,
       hSds: sds('h', patient.sex, age, h),
       wSds: sds('w', patient.sex, age, w),
       bSds: sds('b', patient.sex, age, b),
@@ -149,6 +170,52 @@
     };
     return out;
   }
+
+  // Count how many IAP major centile lines (3, 10, 25, 50, 75, 90, 97) lie strictly downward between two z-scores
+  function centileDropCount(zPrev, zCur) {
+    if (zPrev == null || zCur == null || zCur >= zPrev) return 0;
+    let crossed = 0;
+    for (const zLine of Z_IAP) if (zPrev > zLine && zCur < zLine) crossed++;
+    return crossed;
+  }
+
+  // Neutral clinical decision-support flags for a visit
+  function clinicalFlags(patient, visitsSorted, visit, opts) {
+    if (!patient || !visit) return [];
+    const hvThreshold = (opts && opts.hvThreshold > 0) ? opts.hvThreshold : 4;
+    const a = analyse(patient, visit);
+    const mphRes = mph(patient.sex, num(patient.fatherHt), num(patient.motherHt));
+    const hv = heightVelocity(patient, visitsSorted || [], visit);
+    const flags = [];
+    if (a.hSds != null && a.hSds < -2) {
+      flags.push({ code: 'short', level: 'warn', text: `Ht SDS ${a.hSds.toFixed(2)} (< −2 SD)` });
+    }
+    if (a.hSds != null && mphRes && mphRes.sds != null && (a.hSds - mphRes.sds) < -1.5) {
+      flags.push({ code: 'mph_gap', level: 'warn', text: `Ht SDS − MPH SDS ${(a.hSds - mphRes.sds).toFixed(2)} (< −1.5)` });
+    }
+    if (hv && a.age != null && a.age > 3 && hv.cmPerYear < hvThreshold) {
+      flags.push({ code: 'hv_low', level: 'warn', text: `Height velocity ${hv.cmPerYear.toFixed(1)} cm/yr (< ${hvThreshold})` });
+    }
+    // Crossing >= 2 major centile lines downward compared to any earlier visit
+    const earlier = (visitsSorted || []).filter(v => v.id !== visit.id && v.date < visit.date && num(v.height) > 0);
+    if (a.hSds != null && earlier.length) {
+      let maxCross = 0;
+      for (const prev of earlier) {
+        const pa = analyse(patient, prev);
+        maxCross = Math.max(maxCross, centileDropCount(pa.hSds, a.hSds));
+      }
+      if (maxCross >= 2) flags.push({ code: 'centile_drop', level: 'warn', text: `Crossed ${maxCross} major centile lines downward` });
+    }
+    if (a.bmiCat === 'Overweight' || a.bmiCat === 'Obese') {
+      flags.push({ code: 'bmi', level: 'warn', text: `BMI: ${a.bmiCat}` });
+    }
+    const extreme = [['Ht', a.hSds], ['Wt', a.wSds], ['BMI', a.bSds]].filter(([, z]) => z != null && Math.abs(z) > 5);
+    if (extreme.length) {
+      flags.push({ code: 'extreme', level: 'check', text: `Check measurement (${extreme.map(([k]) => k).join('/')} SDS beyond ±5)` });
+    }
+    return flags;
+  }
+
   // height velocity from the latest visit and the closest earlier visit at least 4 months before
   function heightVelocity(patient, visitsSorted, uptoVisit) {
     const list = visitsSorted.filter(v => num(v.height) > 0 && v.date <= uptoVisit.date);
@@ -178,6 +245,6 @@
   }
   const BMI_P = [3, 5, 10, 25, 50];
 
-  global.Growth = { IAP_P, BMI_P, Z_IAP, normCdf, normInv, sds, valueAtZ, analyse, heightVelocity, mph, bmi, ageYears, ageText,
+  global.Growth = { IAP_P, BMI_P, Z_IAP, normCdf, normInv, sds, valueAtZ, analyse, ageContext, clinicalFlags, centileDropCount, heightVelocity, mph, bmi, ageYears, ageText,
     centileOf, centileText, curve, cutoffCurve, bmiCutoffs, bmiCategory, num, minAge };
 })(typeof window !== 'undefined' ? window : globalThis);
