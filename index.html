@@ -126,8 +126,8 @@ nav.links a{text-decoration:none;opacity:.9}nav.links a:hover{opacity:1;text-dec
 .mcard p{font-size:15px;color:var(--mute);margin-top:6px}
 
 /* stacking panels */
-.panels{position:relative}
-.panel{position:sticky;top:0;height:100vh;min-height:560px;color:#fdfbf4}
+.panels{position:relative;isolation:isolate}
+.panel{position:sticky;top:0;height:100vh;min-height:560px;color:#fdfbf4;background:var(--fb,#0b190d);overflow:hidden}
 .panel .slot{position:absolute;inset:0}
 .panel:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,18,8,.62),rgba(6,18,8,0) 55%)}
 .panel .cap{position:absolute;z-index:2;left:var(--pad);right:var(--pad);bottom:clamp(36px,7vh,80px);max-width:1280px;margin:0 auto}
@@ -288,11 +288,11 @@ dialog .close{width:46px;height:46px;border-radius:50%;border:1.3px solid var(--
 <div class="wrap center rv" style="padding:24px 0 clamp(48px,6vw,80px)"><h2>…and we follow your child as they grow.</h2></div>
 
 <section class="panels" aria-label="How we follow children over time">
-  <div class="panel"><div class="slot" data-img="images/follow-1.jpg" style="--fb:#1c1a52"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="0"></svg><img class="ph" alt="Reviewing a growth chart with parents"><span class="tag">images/follow-1.jpg</span></div>
+  <div class="panel" style="--fb:#1c1a52"><div class="slot" data-img="images/follow-1.jpg"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="0"></svg><img class="ph" alt="Reviewing a growth chart with parents"><span class="tag">images/follow-1.jpg</span></div>
     <div class="cap"><span class="chip">Every visit</span><h3>Measured, plotted and compared with last time</h3><p>Small changes in growth speed are often the first sign that something needs attention.</p></div></div>
-  <div class="panel"><div class="slot" data-img="images/follow-2.jpg" style="--fb:#1b6b6e"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="1"></svg><img class="ph" alt="The doctor explaining results to a family"><span class="tag">images/follow-2.jpg</span></div>
+  <div class="panel" style="--fb:#1b6b6e"><div class="slot" data-img="images/follow-2.jpg"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="1"></svg><img class="ph" alt="The doctor explaining results to a family"><span class="tag">images/follow-2.jpg</span></div>
     <div class="cap"><span class="chip">Every result</span><h3>Explained in words parents can use</h3><p>You leave knowing what was found, what it means, and what happens next.</p></div></div>
-  <div class="panel"><div class="slot" data-img="images/follow-3.jpg" style="--fb:#4b1939"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="2"></svg><img class="ph" alt="A teenager at a follow-up visit"><span class="tag">images/follow-3.jpg</span></div>
+  <div class="panel" style="--fb:#4b1939"><div class="slot" data-img="images/follow-3.jpg"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="2"></svg><img class="ph" alt="A teenager at a follow-up visit"><span class="tag">images/follow-3.jpg</span></div>
     <div class="cap"><span class="chip">Year after year</span><h3>Followed until they are fully grown</h3><p>Hormone care for children is a long journey. We keep every measurement so the whole story is in one place.</p></div></div>
 </section>
 
@@ -520,7 +520,8 @@ if(reduce||!window.gsap){
   gsap.fromTo(stackCards,{rotate:0,xPercent:0,yPercent:0},{rotate:i=>FAN[i].r,xPercent:i=>FAN[i].x,yPercent:i=>FAN[i].y,ease:'power2.out',
     scrollTrigger:{trigger:'#stack',start:'top 80%',end:'center 45%',scrub:.8,invalidateOnRefresh:true}});
   document.querySelectorAll('.panel').forEach((p,i,all)=>{if(i===all.length-1)return;
-    gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true,invalidateOnRefresh:true}})});
+    gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true,invalidateOnRefresh:true}});
+    gsap.to(p.querySelector('.cap'),{opacity:0,y:-24,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top 45%',scrub:true,invalidateOnRefresh:true}})});
   ScrollTrigger.sort();
   ScrollTrigger.refresh();
   window.addEventListener('load',()=>ScrollTrigger.refresh(),{once:true});
