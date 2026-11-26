@@ -23,10 +23,13 @@
     out: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
     sheet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg>',
     sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>',
+    bar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>',
   };
 
   // ---------- ui state ----------
-  const ui = { q: '', tab: {}, full: {}, view: '' };
+  const ui = { q: '', tab: {}, full: {}, view: '', swWaiting: null };
   let toastT;
   function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
   function modal(title, text, buttons) {
@@ -42,14 +45,35 @@
   // ---------- helpers ----------
   function visitsOf(pid) { return S.visitsOf(pid); }
   function lastVisit(pid) { const v = visitsOf(pid); return v[v.length - 1]; }
-  function points(p) { return visitsOf(p.id).map(v => { const r = G.analyse(p, v); return { age: r.age, h: r.height, w: r.weight, b: r.bmi, ba: G.num(v.boneAge) }; }).filter(x => x.age != null); }
+  function points(p) { return visitsOf(p.id).map(v => { const r = G.analyse(p, v); return { age: r.age, h: r.height, w: r.weight, b: r.bmi, ba: G.num(v.boneAge), corrected: r.isCorrected }; }).filter(x => x.age != null); }
+  function applyTextSize() {
+    const sz = (S.state.settings && S.state.settings.textSize) || 'normal';
+    if (sz === 'normal') delete document.documentElement.dataset.size;
+    else document.documentElement.dataset.size = sz;
+  }
+  function applyTheme() {
+    const mode = (S.state.settings && S.state.settings.theme) || 'light';
+    const isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) document.documentElement.dataset.theme = 'dark';
+    else delete document.documentElement.dataset.theme;
+  }
+  function updateBanner() {
+    return ui.swWaiting ? `<button type="button" class="update-bar" data-act="applyUpdate">New version available · Tap to update<span class="pill">Update</span></button>` : '';
+  }
+  function bottomNav(active) {
+    const tabs = [['today', 'Today', I.home, '/'], ['patients', 'Patients', I.users, '/patients'], ['reports', 'Reports', I.bar, '/reports'], ['settings', 'Settings', I.gear, '/settings']];
+    return `<nav class="bnav" aria-label="Primary"><div class="bnav-in">${tabs.map(([k, lbl, ic, hash]) =>
+      `<button type="button" class="${active === k ? 'on' : ''}" data-act="nav" data-to="${hash}" ${active === k ? 'aria-current="page"' : ''}>${ic}<span>${lbl}</span></button>`
+    ).join('')}</div></nav>`;
+  }
   function syncPill() {
     const st = S.state;
-    if (!S.cloudConfigured) return `<div class="syncpill"><span class="dot off"></span>Demo mode · saved on this phone only</div>`;
-    if (!navigator.onLine) return `<div class="syncpill"><span class="dot wait"></span>Offline · ${st.pending} waiting to upload</div>`;
-    if (st.error) return `<div class="syncpill" data-act="sync"><span class="dot bad"></span>Could not sync (${esc(st.error)}) · tap to retry</div>`;
-    if (st.syncing || st.pending) return `<div class="syncpill"><span class="dot wait"></span>Saving online…</div>`;
-    return `<div class="syncpill"><span class="dot"></span>All records safely saved online</div>`;
+    if (!S.cloudConfigured) return `<div class="syncpill"><div class="syncrow"><span class="dot off"></span>Demo mode · saved on this phone only</div></div>`;
+    if (!navigator.onLine) return `<div class="syncpill"><div class="syncrow"><span class="dot wait"></span>Offline · ${st.pending} waiting to upload</div></div>`;
+    if (st.error) return `<div class="syncpill" data-act="sync"><div class="syncrow"><span class="dot bad"></span>Not saved online yet · tap to retry</div><div class="syncerr">${esc(st.error)}</div></div>`;
+    if (st.syncing) return `<div class="syncpill"><div class="syncrow"><span class="pebble-ring sync-ring" aria-hidden="true"></span>Saving online…</div></div>`;
+    if (st.pending) return `<div class="syncpill"><div class="syncrow"><span class="dot wait"></span>${st.pending} waiting to save online…</div></div>`;
+    return `<div class="syncpill"><div class="syncrow"><span class="dot"></span>All records safely saved online</div></div>`;
   }
   function dateTriple(name, iso, withToday) {
     const [y, m, d] = (iso || '').split('-');
@@ -73,7 +97,7 @@
   // ======================================================
   function viewLogin() {
     return `<div class="login">
-      <img class="logo" src="logo.png?v=6" alt="Peds Endo Clinic">
+      <div class="pebble-ring logo-ring"><img class="logo" src="logo.png?v=6" alt="Peds Endo Clinic"></div>
       <h1>${esc((CFG.clinic || {}).doctorName || 'Dr. Vijay Shripad Dhawle')}</h1>
       <p class="sub">Pediatric Endocrinology · Latur</p>
       <form class="form" id="loginForm" autocomplete="on">
@@ -86,37 +110,109 @@
     </div>`;
   }
 
-  function viewHome() {
+  function patientRow(p, lv, extraBadge) {
+    const a = lv ? G.analyse(p, lv) : null;
+    const age = G.ageText(G.ageYears(p.dob, today()));
+    const badge = extraBadge || (a && a.hSds != null ? `<span class="chip ${a.hSds < -2 ? 'warn' : ''}">Ht ${sd(a.hSds)}</span>` : '');
+    return `<li class="pcard" data-act="open" data-id="${p.id}"><div class="pebble ${p.sex}"><span>${esc(initials(p.name))}</span></div>
+      <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${age} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · ${lv ? 'Last seen ' + nice(lv.date) : 'No visits yet'}</div></div>${badge}</li>`;
+  }
+
+  function followUpsDue() {
+    const t = today();
+    const dt = new Date(t + 'T00:00:00Z');
+    dt.setUTCDate(dt.getUTCDate() + 7);
+    const weekEnd = dt.toISOString().slice(0, 10);
+    const due = [];
+    for (const p of S.patients()) {
+      const vs = visitsOf(p.id);
+      let latestFu = null;
+      for (let i = vs.length - 1; i >= 0; i--) {
+        const nv = vs[i].notes && vs[i].notes.nextVisit;
+        if (nv) { latestFu = { date: nv, fromVisit: vs[i] }; break; }
+      }
+      if (!latestFu) continue;
+      if (vs.some(v => v.date >= latestFu.date && v.id !== latestFu.fromVisit.id)) continue;
+      if (latestFu.date > weekEnd) continue;
+      const status = latestFu.date < t ? 'over' : latestFu.date === t ? 'due' : 'week';
+      const label = status === 'over' ? 'Overdue · ' + nice(latestFu.date) : status === 'due' ? 'Due today' : nice(latestFu.date);
+      due.push({ p, lv: vs[vs.length - 1], date: latestFu.date, status, label });
+    }
+    const order = { due: 0, over: 1, week: 2 };
+    due.sort((a, b) => (order[a.status] - order[b.status]) || a.date.localeCompare(b.date));
+    return due;
+  }
+
+  function filteredPatients() {
     const all = S.patients().map(p => ({ p, lv: lastVisit(p.id) }));
     all.sort((a, b) => ((b.lv && b.lv.date) || b.p.createdAt || '').localeCompare((a.lv && a.lv.date) || a.p.createdAt || ''));
     const q = ui.q.trim().toLowerCase();
-    const list = q ? all.filter(({ p }) => (p.name || '').toLowerCase().includes(q) || (p.phone || '').includes(q) || (p.code || '').toLowerCase().includes(q)) : all.slice(0, 60);
+    const list = q ? all.filter(({ p }) => (p.name || '').toLowerCase().includes(q) || (p.phone || '').includes(q) || (p.code || '').toLowerCase().includes(q)) : all;
+    return { all, list, q };
+  }
+
+  function viewToday() {
+    const { all, list, q } = filteredPatients();
     const t = today();
-    const nToday = [...S.state.visits.values()].filter(v => !v.deleted && v.date === t).length;
+    const seenToday = [];
+    for (const { p, lv } of all) {
+      const vs = visitsOf(p.id);
+      const tv = vs.find(v => v.date === t);
+      if (tv) seenToday.push({ p, lv: tv });
+    }
+    const due = followUpsDue();
     const d = new Date();
     const dateLabel = d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
     return `<div class="top"><img class="logo" src="logo.png?v=6" alt="Peds Endo Clinic"><button class="iconbtn" data-act="settings" aria-label="Settings">${I.gear}</button></div>
+      ${updateBanner()}
       <section class="hello">
         <div class="date">${dateLabel} · ${esc((CFG.clinic || {}).greetingName || 'Dr. Dhawle')}</div>
         <h1>Today’s clinic</h1>
-        <div class="stats">${all.length} patient${all.length === 1 ? '' : 's'} · ${nToday} visit${nToday === 1 ? '' : 's'} today</div>
+        <div class="stats">${seenToday.length} seen today · ${due.length} follow-up${due.length === 1 ? '' : 's'} due · ${all.length} total</div>
         ${S.cloudConfigured ? '' : '<div class="demo">Demo mode: records are kept on this phone only. Connect Supabase in config.js before using with patients.</div>'}
       </section>
       <div class="search">${I.search}<input id="q" type="search" placeholder="Search name, phone or ID" value="${esc(ui.q)}" autocomplete="off"></div>
       <button class="cta" data-act="newPatient"><span class="plus">+</span>New patient</button>
-      <div class="sec-title">${q ? 'Search results' : 'Recent patients'}<small>${list.length}${!q && all.length > 60 ? ' of ' + all.length : ''}</small></div>
-      ${list.length ? `<ul class="plist">${list.map(({ p, lv }) => {
-        const a = lv ? G.analyse(p, lv) : null;
-        const age = G.ageText(G.ageYears(p.dob, today()));
-        const chip = a && a.hSds != null ? `<span class="chip ${a.hSds < -2 ? 'warn' : ''}">Ht ${sd(a.hSds)}</span>` : '';
-        return `<li class="pcard" data-act="open" data-id="${p.id}"><div class="pebble ${p.sex}"><span>${esc(initials(p.name))}</span></div>
-          <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${age} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · ${lv ? 'Last seen ' + nice(lv.date) : 'No visits yet'}</div></div>${chip}</li>`;
-      }).join('')}</ul>` : `<div class="empty"><div class="big">${q ? 'No match' : 'No patients yet'}</div>${q ? 'Try part of the name or phone number' : 'Tap “New patient” to add the first record'}</div>`}
-      ${syncPill()}`;
+      ${q ? `<div class="sec-title">Search results<small>${list.length}</small></div>
+        ${list.length ? `<ul class="plist">${list.slice(0, 60).map(({ p, lv }) => patientRow(p, lv)).join('')}</ul>`
+          : `<div class="empty"><div class="big">No match</div>Try part of the name or phone number</div>`}`
+      : `<div class="sec-title">Today’s patients<small>${seenToday.length}</small></div>
+        ${seenToday.length ? `<ul class="plist">${seenToday.map(({ p, lv }) => patientRow(p, lv)).join('')}</ul>`
+          : `<div class="empty"><div class="big">No visits today yet</div>Search above or tap “New patient” to start</div>`}
+        <div class="sec-title">Follow-ups due<small>${due.length}</small></div>
+        ${due.length ? `<ul class="plist">${due.map(({ p, lv, status, label }) => patientRow(p, lv, `<span class="fu-badge ${status}">${esc(label)}</span>`)).join('')}</ul>`
+          : `<div class="empty"><div class="big">No follow-ups due</div>Upcoming follow-ups from visit notes appear here</div>`}`}
+      ${syncPill()}${bottomNav('today')}`;
   }
 
-  function tile(k, v, unit, s, cls = '') {
-    return `<div class="tile ${cls}"><span class="bar"></span><div class="k">${k}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
+  function viewPatients() {
+    const { all, list, q } = filteredPatients();
+    const shown = q ? list : list.slice(0, 100);
+    return `<div class="top"><span style="width:56px"></span><div class="ttl">Patients</div><button class="iconbtn" data-act="newPatient" aria-label="New patient">+</button></div>
+      ${updateBanner()}
+      <div class="search" style="margin-top:8px">${I.search}<input id="q" type="search" placeholder="Search name, phone or ID" value="${esc(ui.q)}" autocomplete="off"></div>
+      <button class="cta" data-act="newPatient"><span class="plus">+</span>New patient</button>
+      <div class="sec-title">${q ? 'Search results' : 'All patients'}<small>${shown.length}${!q && all.length > 100 ? ' of ' + all.length : ''}</small></div>
+      ${shown.length ? `<ul class="plist">${shown.map(({ p, lv }) => patientRow(p, lv)).join('')}</ul>`
+        : `<div class="empty"><div class="big">${q ? 'No match' : 'No patients yet'}</div>${q ? 'Try part of the name or phone number' : 'Tap “New patient” to add the first record'}</div>`}
+      ${syncPill()}${bottomNav('patients')}`;
+  }
+
+  function viewReports() {
+    const pts = S.patients();
+    const vs = [...S.state.visits.values()].filter(v => !v.deleted);
+    return `<div class="top"><span style="width:56px"></span><div class="ttl">Reports</div><span style="width:56px"></span></div>
+      ${updateBanner()}
+      <div class="tiles" style="margin-top:12px">
+        ${tile('Total patients', pts.length, '', 'Active register')}
+        ${tile('Total visits', vs.length, '', 'All recorded visits')}
+      </div>
+      <div style="margin-top:16px"><button class="btn" style="width:100%" data-act="exportCsv">${I.down}Export all visits to Excel (CSV)</button></div>
+      ${syncPill()}${bottomNav('reports')}`;
+  }
+
+  function tile(k, v, unit, s, cls = '', accent = '') {
+    return `<div class="tile ${cls}"${accent ? ` data-accent="${accent}"` : ''}><div class="k">${k}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
   }
 
   function viewPatient(id) {
@@ -136,20 +232,23 @@
     }
     const zsc = z => z == null ? '' : `SDS ${sd(z)} <span class="c">· ${G.centileText(z)}</span>`;
     const diff = a && a.hSds != null && mph ? a.hSds - mph.sds : null;
+    const flags = lv ? G.clinicalFlags(p, vs, lv, { hvThreshold: (S.state.settings && S.state.settings.hvThreshold) || 4 }) : [];
+    const corrNote = a && a.isCorrected ? ` · Corrected ${a.ageText} (Chrono ${a.chronoAgeText})` : '';
     return `<div class="top"><button class="iconbtn" data-act="home" aria-label="Back">${I.back}</button><div class="ttl"></div><button class="iconbtn" data-act="editPatient" data-id="${id}" aria-label="Edit patient">${I.edit}</button></div>
-      <div class="hero"><div class="nm">${esc(p.name)}</div>
-        <div class="meta">${ageNow} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · Born ${nice(p.dob)}${p.phone ? ' · ' + esc(p.phone) : ''}</div>
-        <div class="chips">${p.code ? `<span class="chip">${esc(p.code)}</span>` : ''}${mph ? `<span class="chip gold">MPH ${n1(mph.value)} cm</span><span class="chip">Target ${n1(mph.low)}–${n1(mph.high)}</span>` : '<span class="chip">Parents’ heights not entered</span>'}</div></div>
+      <div class="hero"><div class="hero-head"><div class="pebble-ring"><div class="pebble ${p.sex}"><span>${esc(initials(p.name))}</span></div></div><div><div class="nm">${esc(p.name)}</div>
+        <div class="meta">${ageNow} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · Born ${nice(p.dob)}${p.phone ? ' · ' + esc(p.phone) : ''}</div></div></div>
+        <div class="chips">${p.code ? `<span class="chip">${esc(p.code)}</span>` : ''}${p.birth && p.birth.term === 'Preterm' && p.birth.gestWeeks ? `<span class="chip">Preterm ${esc(p.birth.gestWeeks)} wk</span>` : ''}${mph ? `<span class="chip gold">MPH ${n1(mph.value)} cm</span><span class="chip">Target ${n1(mph.low)}–${n1(mph.high)}</span>` : '<span class="chip">Parents’ heights not entered</span>'}</div></div>
       <div style="margin-top:12px"><button class="cta gold" data-act="newVisit" data-id="${id}"><span class="plus">+</span>Add today’s visit</button></div>
       <div class="btnrow"><button class="btn" data-act="printOpd" data-id="${id}">${I.print}OPD sheet</button><button class="btn" data-act="printCharts" data-id="${id}" ${vs.length ? '' : 'disabled style="opacity:.5"'}>${I.chart}Growth charts</button></div>
+      ${flags.length ? `<div class="flags">${flags.map(f => `<span class="flag ${f.level}">${esc(f.text)}</span>`).join('')}</div>` : ''}
 
-      <div class="sec-title">Latest visit<small>${lv ? nice(lv.date) + ' · ' + a.ageText : ''}</small></div>
+      <div class="sec-title">Latest visit<small>${lv ? nice(lv.date) + ' · ' + a.ageText + (a.isCorrected ? ' (corr)' : '') : ''}</small></div>
       ${lv ? `<div class="tiles">
-        ${tile('Height', n1(a.height), 'cm', zsc(a.hSds), a.hSds != null && a.hSds < -2 ? 'alert' : '')}
-        ${tile('Weight', n1(a.weight), 'kg', zsc(a.wSds), '')}
-        ${tile('BMI', n1(a.bmi), '', a.bSds != null ? `SDS ${sd(a.bSds)}${a.bmiCat ? ` <span class="c">· ${a.bmiCat}</span>` : ''}` : (a.age < 2 ? '<span class="c">From 2 years</span>' : ''), a.bmiCat === 'Overweight' || a.bmiCat === 'Obese' ? 'alert' : '')}
-        ${tile('Height velocity', hv ? n1(hv.cmPerYear) : '—', hv ? 'cm/yr' : '', hv ? `<span class="c">Over ${n1(hv.overYears * 12).replace('.0', '')} months</span>` : '<span class="c">Needs 2 visits ≥4 months apart</span>', '')}
-        ${mph ? `<div class="tile" style="grid-column:1/-1"><div class="k">Mid-parental height</div>
+        ${tile('Height', n1(a.height), 'cm', zsc(a.hSds), a.hSds != null && a.hSds < -2 ? 'alert' : '', 'h')}
+        ${tile('Weight', n1(a.weight), 'kg', zsc(a.wSds), '', 'w')}
+        ${tile('BMI', n1(a.bmi), '', a.bSds != null ? `SDS ${sd(a.bSds)}${a.bmiCat ? ` <span class="c">· ${a.bmiCat}</span>` : ''}` : (a.age != null && a.age < 2 ? '<span class="c">From 2 years</span>' : a.preTermCga ? '<span class="c">Pre-term (&lt;40 wk CGA)</span>' : ''), a.bmiCat === 'Overweight' || a.bmiCat === 'Obese' ? 'alert' : '', 'b')}
+        ${tile('Height velocity', hv ? n1(hv.cmPerYear) : '—', hv ? 'cm/yr' : '', hv ? `<span class="c">Over ${n1(hv.overYears * 12).replace('.0', '')} months</span>` : '<span class="c">Needs 2 visits ≥4 months apart</span>', '', 'hv')}
+        ${mph ? `<div class="tile" data-accent="mph" style="grid-column:1/-1"><div class="k">Mid-parental height${corrNote ? ` <span class="c">${esc(corrNote)}</span>` : ''}</div>
           <div class="v">${n1(mph.value)} <small>cm · SDS ${sd(mph.sds)} · ${G.centileText(mph.sds)}</small></div>
           <div class="s">${diff != null ? `Ht SDS − MPH SDS = ${sd(diff)}` : ''} <span class="c">· F ${n1(+p.fatherHt)} · M ${n1(+p.motherHt)}</span></div></div>` : ''}
       </div>` : `<div class="empty"><div class="big">No visits yet</div>Add the first visit to see SDS and charts</div>`}
@@ -158,7 +257,7 @@
       <div class="card">
         <div class="seg">${[['h', 'Height'], ['w', 'Weight'], ['b', 'BMI']].map(([k, l]) => `<button class="${tab === k ? 'on' : ''}" data-act="tab" data-id="${id}" data-k="${k}">${l}</button>`).join('')}</div>
         <div class="chartbox">${chart}</div>
-        <div class="charttools"><div class="legend"><span><i style="background:${tab === 'w' ? '#1f7a74' : '#c94b24'}"></i>${esc(p.name.split(' ')[0])}</span>${tab === 'h' && mph ? '<span><i style="background:#b07a0e;border-radius:2px;transform:rotate(45deg)"></i>MPH</span>' : ''}${tab === 'h' && vs.some(v => v.boneAge) ? '<span><i style="border:2px solid #2f3c9e;background:#fff"></i>Bone age</span>' : ''}${tab === 'b' ? '<span><i style="background:#e88a1a"></i>23</span><span><i style="background:#d1342f"></i>27</span>' : ''}</div>
+        <div class="charttools"><div class="legend"><span><i style="background:${tab === 'w' ? '#1f7a74' : '#c94b24'}"></i>${esc(p.name.split(' ')[0])}</span>${tab === 'h' ? '<span><i style="background:#c81e1e"></i>−2.25/−2.5/−3 SD</span>' : ''}${tab === 'h' && mph ? '<span><i style="background:#b07a0e;border-radius:2px;transform:rotate(45deg)"></i>MPH</span>' : ''}${tab === 'h' && vs.some(v => v.boneAge) ? '<span><i style="border:2px solid #2f3c9e;background:#fff"></i>Bone age</span>' : ''}${pts.some(q => q.corrected) ? '<span><i style="border:2px solid #c94b24;background:#fff"></i>Corrected (&lt;2 y)</span>' : ''}${tab === 'b' ? '<span><i style="background:#e88a1a"></i>23</span><span><i style="background:#d1342f"></i>27</span>' : ''}</div>
           <button class="link" data-act="zoom" data-id="${id}">${full ? 'Zoom to patient' : 'Show 0–18 years'}</button></div>
       </div>
 
@@ -194,6 +293,7 @@
       <div class="field"><label>Referred by</label><input name="refBy" value="${esc(p.refBy)}"></div>
       <details class="more"><summary>Birth history <span class="c"></span></summary><div class="form">
         <div><span class="flabel">Full term / Preterm</span>${choice('b_term', ['Full term', 'Preterm'], b.term)}</div>
+        <div class="field"><label>Gestational age (if preterm)</label><div class="unit"><input name="b_gestWeeks" inputmode="numeric" value="${esc(b.gestWeeks)}" placeholder="e.g. 32"><span>wk</span></div></div>
         <div><span class="flabel">AGA / SGA</span>${choice('b_aga', ['AGA', 'SGA', 'LGA'], b.aga)}</div>
         <div class="field"><label>Birth weight</label><div class="unit"><input name="b_weight" inputmode="decimal" value="${esc(b.weight)}"><span>kg</span></div></div>
         <div><span class="flabel">NICU admission</span>${choice('b_nicu', ['Yes', 'No'], b.nicu)}</div></div></details>
@@ -244,10 +344,30 @@
 
   function viewSettings() {
     const st = S.state;
-    return `<div class="top"><button class="iconbtn" data-act="home" aria-label="Back">${I.back}</button><div class="ttl">Settings</div><span style="width:52px"></span></div>
+    const cfg = st.settings || {};
+    const sz = cfg.textSize || 'normal';
+    const hvT = cfg.hvThreshold || 4;
+    const th = cfg.theme || 'light';
+    return `<div class="top"><span style="width:56px"></span><div class="ttl">Settings</div><span style="width:56px"></span></div>
+      ${updateBanner()}
+      <div class="card" style="margin-bottom:12px">
+        <div class="flabel" style="margin-bottom:8px">Appearance</div>
+        <div class="seg sm">${[['light', 'Light'], ['dark', 'Dark'], ['auto', 'Auto']].map(([k, l]) =>
+          `<button type="button" class="${th === k ? 'on' : ''}" data-act="theme" data-v="${k}">${l}</button>`
+        ).join('')}</div>
+        <div class="flabel" style="margin:16px 0 8px">Text size</div>
+        <div class="seg sm">${[['normal', 'Normal'], ['large', 'Large'], ['xlarge', 'Extra large']].map(([k, l]) =>
+          `<button type="button" class="${sz === k ? 'on' : ''}" data-act="textSize" data-v="${k}">${l}</button>`
+        ).join('')}</div>
+        <div class="flabel" style="margin:16px 0 8px">Height velocity alert below (age &gt; 3 y)</div>
+        <div class="seg sm">${[[3.5, '3.5'], [4, '4 cm/yr'], [4.5, '4.5'], [5, '5']].map(([v, l]) =>
+          `<button type="button" class="${Number(hvT) === v ? 'on' : ''}" data-act="hvThresh" data-v="${v}">${l}</button>`
+        ).join('')}</div>
+      </div>
       <div class="card settings">
         <div class="row" data-act="printBlank"><span class="ic">${I.sheet}</span><div>Print blank OPD sheet<small>Front and back, A4</small></div></div>
         ${S.cloudConfigured ? `<div class="row" data-act="sync"><span class="ic">${I.sync}</span><div>Sync now<small>${st.lastSync ? 'Last synced ' + new Date(st.lastSync).toLocaleString('en-IN') : 'Not synced yet'} · ${st.pending} waiting${st.user ? ' · ' + esc(st.user.email) : ''}</small></div></div>` : ''}
+        <div class="row" data-act="showPending"><span class="ic">${I.up}</span><div>Pending uploads<small>${st.pending} record${st.pending === 1 ? '' : 's'} waiting to upload</small></div></div>
         <div class="row" data-act="exportJson"><span class="ic">${I.down}</span><div>Save a backup file<small>All patients and visits (send it to Google Drive or WhatsApp)</small></div></div>
         <div class="row" data-act="exportCsv"><span class="ic">${I.down}</span><div>Export to Excel (CSV)<small>One row per visit, with SDS</small></div></div>
         <div class="row" data-act="importJson"><span class="ic">${I.up}</span><div>Restore from a backup file<small>Adds records that are missing</small></div></div>
@@ -255,7 +375,8 @@
       </div>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
       ${syncPill()}
-      <p class="fineprint">Growth references: WHO Child Growth Standards 2006 (0–5 years); IAP 2015 growth charts for 5–18 years (Khadilkar V et al., Indian Pediatr 2015;52:47–55). Height and weight SDS for 5–18 years are computed from the published IAP centile tables; BMI SDS uses LMS values fitted to the published IAP BMI table. Mid-parental height = (father + mother ± 13) / 2; target range ± 8.5 cm. Figures support, and do not replace, clinical judgement.</p>`;
+      <p class="fineprint">Growth references: WHO Child Growth Standards 2006 (0–5 years); IAP 2015 growth charts for 5–18 years (Khadilkar V et al., Indian Pediatr 2015;52:47–55). Height and weight SDS for 5–18 years are computed from the published IAP centile tables; BMI SDS uses LMS values fitted to the published IAP BMI table. Mid-parental height = (father + mother ± 13) / 2; target range ± 8.5 cm. Figures support, and do not replace, clinical judgement.</p>
+      ${bottomNav('settings')}`;
   }
 
   // ======================================================
@@ -265,25 +386,33 @@
     const h = location.hash.replace(/^#\/?/, '');
     const parts = h.split('/').filter(Boolean);
     if (S.state.cloud && !S.state.user) return ['login'];
-    if (!parts.length) return ['home'];
+    if (!parts.length || parts[0] === 'today') return ['today'];
+    if (parts[0] === 'patients') return ['patients'];
+    if (parts[0] === 'reports') return ['reports'];
     if (parts[0] === 'new') return ['pform'];
     if (parts[0] === 'settings') return ['settings'];
     if (parts[0] === 'p' && parts[2] === 'edit') return ['pform', parts[1]];
     if (parts[0] === 'p' && parts[2] === 'visit') return ['vform', parts[1], parts[3] === 'new' ? null : parts[3]];
     if (parts[0] === 'p') return ['patient', parts[1]];
-    return ['home'];
+    return ['today'];
   }
   function render(keepScroll) {
     const r = route(), y = window.scrollY;
     ui.view = r[0];
-    $app.innerHTML = r[0] === 'login' ? viewLogin() : r[0] === 'home' ? viewHome() : r[0] === 'patient' ? viewPatient(r[1]) :
-      r[0] === 'pform' ? viewPatientForm(r[1]) : r[0] === 'vform' ? viewVisitForm(r[1], r[2]) : viewSettings();
+    $app.innerHTML = r[0] === 'login' ? viewLogin()
+      : r[0] === 'today' ? viewToday()
+      : r[0] === 'patients' ? viewPatients()
+      : r[0] === 'reports' ? viewReports()
+      : r[0] === 'patient' ? viewPatient(r[1])
+      : r[0] === 'pform' ? viewPatientForm(r[1])
+      : r[0] === 'vform' ? viewVisitForm(r[1], r[2])
+      : viewSettings();
     if (keepScroll) window.scrollTo(0, y); else window.scrollTo(0, 0);
     if (r[0] === 'pform') updateMph();
     if (r[0] === 'vform') updateLive();
   }
   window.addEventListener('hashchange', () => render(false));
-  S.onChange(() => { if (['home', 'patient', 'settings', 'login'].includes(ui.view)) { const f = document.activeElement && document.activeElement.id === 'q'; render(true); if (f) { const q = document.getElementById('q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); } } });
+  S.onChange(() => { if (['today', 'patients', 'reports', 'patient', 'settings', 'login'].includes(ui.view)) { const f = document.activeElement && document.activeElement.id === 'q'; render(true); if (f) { const q = document.getElementById('q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); } } });
 
   // ---------- live calculations ----------
   function updateMph() {
@@ -314,11 +443,26 @@
     if (!dob) problems.push('a valid date of birth');
     else if (dob > today()) problems.push('a date of birth that is not in the future');
     for (const k of ['fatherHt', 'motherHt']) { const v = G.num(f[k].value); if (f[k].value && !(v > 100 && v < 230)) problems.push((k === 'fatherHt' ? 'father' : 'mother') + '’s height in cm (100–230)'); }
+    const gw = G.num(f.b_gestWeeks && f.b_gestWeeks.value);
+    if (f.b_term.value === 'Preterm' && f.b_gestWeeks.value && !(gw >= 22 && gw <= 42)) problems.push('gestational age in weeks (22–42)');
     if (problems.length) { err.textContent = 'Please enter ' + problems.join(', ') + '.'; err.scrollIntoView({ block: 'center' }); return; }
+    if (!id && window.Helpers) {
+      const dupes = window.Helpers.findDuplicates(S.patients(), { name, dob, phone: val(f, 'phone') }, id);
+      if (dupes.length) {
+        const d = dupes[0];
+        const act = await modal('Possible duplicate patient', `${d.patient.name} (${nice(d.patient.dob)}) — ${d.reason}.`, [
+          { label: 'Open existing patient', value: 'open', cls: 'cta' },
+          { label: 'Save as new anyway', value: 'save', cls: 'btn' },
+          { label: 'Go back', value: null, cls: 'btn' },
+        ]);
+        if (act === 'open') { go('/p/' + d.patient.id); return; }
+        if (act !== 'save') return;
+      }
+    }
     const old = id ? S.state.patients.get(id) : {};
     const rec = { ...old, name, sex, dob, phone: val(f, 'phone'), address: val(f, 'address'), refBy: val(f, 'refBy'),
       fatherHt: val(f, 'fatherHt'), motherHt: val(f, 'motherHt'),
-      birth: { term: f.b_term.value, aga: f.b_aga.value, weight: val(f, 'b_weight').replace(/\s*kg$/i, ''), nicu: f.b_nicu.value },
+      birth: { term: f.b_term.value, gestWeeks: val(f, 'b_gestWeeks'), aga: f.b_aga.value, weight: val(f, 'b_weight').replace(/\s*kg$/i, ''), nicu: f.b_nicu.value },
       history: { development: val(f, 'h_development'), family: val(f, 'h_family'), past: val(f, 'h_past') } };
     if (!id) rec.id = S.uuid();
     if (!rec.code) rec.code = 'PE-' + rec.id.replace(/-/g, '').slice(0, 5).toUpperCase();
@@ -396,7 +540,21 @@
     const act = el.dataset.act, id = el.dataset.id;
     switch (act) {
       case 'home': go('/'); break;
+      case 'nav': go(el.dataset.to); break;
       case 'settings': go('/settings'); break;
+      case 'textSize': await S.setSetting('textSize', el.dataset.v); applyTextSize(); break;
+      case 'theme': await S.setSetting('theme', el.dataset.v); applyTheme(); break;
+      case 'hvThresh': await S.setSetting('hvThreshold', Number(el.dataset.v)); break;
+      case 'applyUpdate': if (ui.swWaiting) { ui.swWaiting.postMessage({ type: 'SKIP_WAITING' }); } break;
+      case 'showPending': {
+        const items = await S.pendingItems();
+        const desc = items.length ? items.map(x => `${x.table}: ${(x.doc && (x.doc.name || x.doc.date)) || x.rowId}`).join('\n') : 'All local changes are already synced.';
+        const act2 = await modal(`Pending uploads (${items.length})`, desc, items.length && S.cloudConfigured
+          ? [{ label: 'Sync now', value: 'sync', cls: 'cta' }, { label: 'Close', value: null, cls: 'btn' }]
+          : [{ label: 'Close', value: null, cls: 'btn' }]);
+        if (act2 === 'sync') { S.sync(); toast('Syncing…'); }
+        break;
+      }
       case 'newPatient': go('/new'); break;
       case 'open': go(id ? '/p/' + id : '/'); break;
       case 'editPatient': go('/p/' + id + '/edit'); break;
@@ -465,9 +623,26 @@
   // ---------- boot ----------
   (async function boot() {
     await S.load();
+    applyTextSize();
+    applyTheme();
+    if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
     try { await S.initCloud(); } catch (e) { console.warn('Cloud unavailable (offline?)', e); }
     render();
     S.sync();
-    if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+      const hadController = !!navigator.serviceWorker.controller;
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        if (reg.waiting) { ui.swWaiting = reg.waiting; render(true); }
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener('statechange', () => {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) { ui.swWaiting = nw; render(true); }
+          });
+        });
+      }).catch(() => {});
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController && !refreshing) { refreshing = true; location.reload(); } });
+    }
   })();
 })();

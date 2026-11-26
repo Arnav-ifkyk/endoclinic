@@ -34,7 +34,11 @@
   const meta = { get: async k => (await idb.get('meta', k) || {}).v, set: (k, v) => idb.put('meta', { k, v }) };
 
   // ---------------- state ----------------
-  const state = { patients: new Map(), visits: new Map(), cloud: null, user: null, syncing: false, lastSync: null, pending: 0, error: null };
+  const state = {
+    patients: new Map(), visits: new Map(), cloud: null, user: null,
+    syncing: false, lastSync: null, pending: 0, error: null,
+    settings: { textSize: 'normal', hvThreshold: 4, printLang: 'en' },
+  };
   const listeners = new Set();
   const emit = () => listeners.forEach(f => { try { f(); } catch (e) { console.error(e); } });
 
@@ -47,11 +51,25 @@
     for (const t of TABLES) for (const r of await idb.all(t)) state[t].set(r.id, r);
     state.pending = (await idb.all('outbox')).length;
     state.lastSync = await meta.get('lastSyncAt');
+    const savedSettings = await meta.get('uiSettings');
+    if (savedSettings && typeof savedSettings === 'object') state.settings = { ...state.settings, ...savedSettings };
+  }
+
+  async function setSetting(k, v) {
+    state.settings = { ...state.settings, [k]: v };
+    await meta.set('uiSettings', state.settings);
+    emit();
+  }
+
+  async function pendingItems() {
+    const box = await idb.all('outbox');
+    return box.map(b => ({ ...b, doc: state[b.table] ? state[b.table].get(b.rowId) : null }));
   }
 
   async function save(table, rec) {
     rec = { ...rec };
     if (!rec.id) { rec.id = uuid(); rec.createdAt = new Date().toISOString(); }
+    if (!rec.schemaVersion) rec.schemaVersion = 2;
     rec._u = Date.now();
     await idb.put(table, rec);
     state[table].set(rec.id, rec);
@@ -166,5 +184,5 @@
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
   global.Store = { state, load, save, remove, patients, visitsOf, initCloud, signIn, signOut, sync, cloudConfigured, exportAll, importAll,
-    onChange: f => listeners.add(f), uuid };
+    setSetting, pendingItems, onChange: f => listeners.add(f), uuid };
 })(window);

@@ -35,7 +35,7 @@
       <div class="idblock">
         <div class="idl">
           ${fld('Name :', p.name)}
-          <div class="row2">${fld('D.O.B. :', dmy(p.dob))}${fld('Age :', a.ageText && a.ageText !== '—' ? a.ageText : '')}</div>
+          <div class="row2">${fld('D.O.B. :', dmy(p.dob))}${fld(a.isCorrected ? 'Corr. Age :' : 'Age :', a.ageText && a.ageText !== '—' ? a.ageText : '')}</div>
           ${fld('Address :', p.address)}
           <div class="row2">${fld('Ref. By :', p.refBy)}${fld('Sex :', patient ? sexTxt : '')}</div>
           <div class="row2">${fld('Phone :', p.phone)}${fld('Patient ID :', p.code || '')}</div>
@@ -56,7 +56,7 @@
 
       <div class="sec"><div class="sec-h">Chief complaints</div>${wl('', notes.chief, 5)}</div>
       <div class="sec"><div class="sec-h">Birth history</div>
-        <div class="grid2">${wl('Full term / Preterm :', birth.term)}${wl('AGA / SGA :', birth.aga)}${wl('Birth weight :', birth.weight ? birth.weight + ' kg' : '')}${wl('NICU admission (Y/N) :', birth.nicu)}</div></div>
+        <div class="grid2">${wl('Full term / Preterm :', birth.term + (birth.gestWeeks ? ` (${birth.gestWeeks} wk)` : ''))}${wl('AGA / SGA :', birth.aga)}${wl('Birth weight :', birth.weight ? birth.weight + ' kg' : '')}${wl('NICU admission (Y/N) :', birth.nicu)}</div></div>
       ${wl('<b>Development :</b>', hist.development)}
       ${wl('<b>Family history</b> (Diabetes / Thyroid / Malignancy / Puberty) :', hist.family)}
       ${wl('<b>Past history / Recurrent admissions :</b>', hist.past)}
@@ -101,18 +101,18 @@
   function chartPages(patient, visits) {
     const p = patient;
     const mph = G().mph(p.sex, G().num(p.fatherHt), G().num(p.motherHt));
-    const pts = visits.map(v => { const r = G().analyse(p, v); return { age: r.age, h: r.height, w: r.weight, b: r.bmi, ba: G().num(v.boneAge) }; }).filter(q => q.age != null);
+    const pts = visits.map(v => { const r = G().analyse(p, v); return { age: r.age, h: r.height, w: r.weight, b: r.bmi, ba: G().num(v.boneAge), corrected: r.isCorrected }; }).filter(q => q.age != null);
     const sexTxt = p.sex === 'F' ? 'Girls' : 'Boys';
-    const strip = `<div class="cp-strip"><div><b>${esc(p.name)}</b> · ${p.sex === 'F' ? 'Female' : 'Male'} · DOB ${dmy(p.dob)}</div>
+    const strip = `<div class="cp-strip"><div><b>${esc(p.name)}</b> · ${p.sex === 'F' ? 'Female' : 'Male'} · DOB ${dmy(p.dob)}${p.birth && p.birth.term === 'Preterm' && p.birth.gestWeeks ? ` · Preterm ${esc(p.birth.gestWeeks)} wk` : ''}</div>
       <div>${mph ? `MPH ${n1(mph.value)} cm (SDS ${sd(mph.sds)}) · Target ${n1(mph.low)}–${n1(mph.high)} cm` : 'MPH: parents\' heights not entered'}</div></div>`;
-    const legend = `<div class="cp-legend"><span><i class="lg-h"></i>Height</span><span><i class="lg-w"></i>Weight</span><span><i class="lg-ba"></i>Bone age</span>${mph ? '<span><i class="lg-mph"></i>Mid-parental height & target range</span>' : ''}</div>`;
-    const tbl = `<table class="grec"><tr><th>Date</th><th>Age</th><th>Height</th><th>Ht SDS</th><th>Weight</th><th>Wt SDS</th><th>BMI</th><th>BMI SDS</th></tr>${visits.slice(-8).map(x => { const r = G().analyse(p, x); return `<tr><td>${dmy(x.date)}</td><td>${r.ageText}</td><td>${n1(r.height)}</td><td>${sd(r.hSds)}</td><td>${n1(r.weight)}</td><td>${sd(r.wSds)}</td><td>${n1(r.bmi)}</td><td>${sd(r.bSds)}</td></tr>`; }).join('')}</table>`;
+    const legend = `<div class="cp-legend"><span><i class="lg-h"></i>Height</span><span><i class="lg-w"></i>Weight</span><span><i class="lg-ba"></i>Bone age</span>${mph ? '<span><i class="lg-mph"></i>Mid-parental height & target range</span>' : ''}<span><i class="lg-ob"></i>−2.25 / −2.5 / −3 SD</span>${pts.some(q => q.corrected) ? '<span><i class="lg-corr"></i>Preterm corrected (&lt;2 y)</span>' : ''}</div>`;
+    const tbl = `<table class="grec"><tr><th>Date</th><th>Age</th><th>Height</th><th>Ht SDS</th><th>Weight</th><th>Wt SDS</th><th>BMI</th><th>BMI SDS</th></tr>${visits.slice(-8).map(x => { const r = G().analyse(p, x); return `<tr><td>${dmy(x.date)}</td><td>${r.ageText}${r.isCorrected ? ' (corr)' : ''}</td><td>${n1(r.height)}</td><td>${sd(r.hSds)}</td><td>${n1(r.weight)}</td><td>${sd(r.wSds)}</td><td>${n1(r.bmi)}</td><td>${sd(r.bSds)}</td></tr>`; }).join('')}</table>`;
     const hw = global.Charts.render({ id: 'phw', mode: 'print', measure: 'hw', sex: p.sex, points: pts, mph, x0: 0, x1: 18, y0: 0, y1: p.sex === 'F' ? 180 : 190, W: 700, H: 780 });
     const bw = global.Charts.windowFor('b', p.sex, pts, true);
     const bmi = global.Charts.render({ id: 'pb', mode: 'print', measure: 'b', sex: p.sex, points: pts, x0: 2, x1: 18, y0: Math.min(bw.y0, 11), y1: Math.max(bw.y1, 30), W: 700, H: 640 });
     return `<section class="sheet chartpage">${letterhead(true)}
         <h2 class="cp-title">${sexTxt} Height and Weight Chart · 0–18 years</h2>${strip}<div class="cp-chart">${hw}</div>${legend}
-        <div class="cp-src">Centiles 3, 10, 25, 50, 75, 90, 97 · WHO 2006 (0–5 y) and IAP 2015 (5–18 y)</div></section>
+        <div class="cp-src">Centiles 3, 10, 25, 50, 75, 90, 97 · Extended −2.25, −2.5, −3 SD · WHO 2006 (0–5 y) and IAP 2015 (5–18 y)</div></section>
       <section class="sheet chartpage">${letterhead(true)}
         <h2 class="cp-title">${sexTxt} BMI Chart · 2–18 years</h2>${strip}<div class="cp-chart bmi">${bmi}</div>
         <div class="cp-legend"><span><i class="lg-h"></i>Patient BMI</span><span><i class="lg-ov"></i>Overweight (adult-equivalent 23)</span><span><i class="lg-ob"></i>Obese (adult-equivalent 27)</span></div>

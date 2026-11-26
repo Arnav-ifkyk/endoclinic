@@ -6,10 +6,10 @@
   const f1 = v => (Math.round(v * 10) / 10).toFixed(1);
 
   const THEME = {
-    screen: { grid: '#ece7df', gridMajor: '#d7cfc3', axis: '#594c6b', cent: '#847896', median: '#2b1b3d', text: '#594c6b',
-      h: '#c94b24', w: '#1f7a74', ba: '#2f3c9e', mph: '#b07a0e', ov: '#e88a1a', ob: '#d1342f', bg: '#fffdfb' },
+    screen: { grid: '#ECEAF4', gridMajor: '#D9D5E8', axis: '#4A4366', cent: '#6E6796', median: '#1C1A52', text: '#564E73',
+      sdRed: '#8C2611', h: '#8C2611', w: '#1B6B6E', ba: '#1B1A54', mph: '#D6A516', ov: '#D6A516', ob: '#8C2611', bg: '#FFFFFF' },
     print: { grid: '#e8dff2', gridMajor: '#c7b6dd', axis: '#2b1b3d', cent: '#6a568f', median: '#2b1b3d', text: '#3b2a57',
-      h: '#c2410c', w: '#0f6b66', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
+      sdRed: '#c81e1e', h: '#c2410c', w: '#0f6b66', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
   };
 
   /**
@@ -18,7 +18,7 @@
   function render(o) {
     const T = THEME[o.mode || 'screen'];
     const W = o.W || 360, H = o.H || 300;
-    const m = { l: o.mode === 'print' ? 40 : 34, r: o.mode === 'print' ? 34 : 30, t: 14, b: 30 };
+    const m = { l: o.mode === 'print' ? 40 : 34, r: o.mode === 'print' ? 40 : 36, t: 14, b: 30 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const { x0, x1, y0, y1 } = o;
     const sx = a => m.l + (a - x0) / (x1 - x0) * pw;
@@ -64,6 +64,15 @@
         const lp = pts[pts.length - 1];
         labels.push({ y: sy(lp[1]), t: String(p), c: p === 50 ? T.median : T.cent });
       });
+      if (meas === 'h') {
+        for (const [z, lbl, dash] of [[-2.25, '−2.25', '4 2'], [-2.5, '−2.5', '2 2'], [-3, '−3', '']]) {
+          const pts = G().curve('h', o.sex, z, Math.max(x0, 0), x1);
+          if (!pts.length) continue;
+          const d = pts.map((q, k) => (k ? 'L' : 'M') + sx(q[0]).toFixed(1) + ' ' + sy(q[1]).toFixed(1)).join('');
+          out.push(`<path d="${d}" fill="none" stroke="${T.sdRed}" stroke-width="${z === -3 ? 1.25 : 0.95}" ${dash ? `stroke-dasharray="${dash}"` : ''} opacity=".9"/>`);
+          labels.push({ y: sy(pts[pts.length - 1][1]), t: lbl, c: T.sdRed, bold: z === -3 });
+        }
+      }
     }
     if (o.measure === 'b') {
       for (const [k, col, t] of [['ov', T.ov, '23'], ['ob', T.ob, '27']]) {
@@ -91,8 +100,8 @@
       if (pts.length > 1) out.push(`<path d="${pts.map((p, i) => (i ? 'L' : 'M') + sx(p.age).toFixed(1) + ' ' + sy(p[k]).toFixed(1)).join('')}" fill="none" stroke="${col}" stroke-width="${o.mode === 'print' ? 1.6 : 2.2}" stroke-linejoin="round"/>`);
       pts.forEach((p, i) => {
         const r = o.mode === 'print' ? 2.8 : (i === pts.length - 1 ? 5 : 3.6);
-        if (k === 'w') out.push(`<rect x="${sx(p.age) - r}" y="${sy(p[k]) - r}" width="${2 * r}" height="${2 * r}" fill="${col}" stroke="#fff" stroke-width="1"/>`);
-        else out.push(`<circle cx="${sx(p.age)}" cy="${sy(p[k])}" r="${r}" fill="${col}" stroke="#fff" stroke-width="1.2"/>`);
+        if (k === 'w') out.push(`<rect x="${sx(p.age) - r}" y="${sy(p[k]) - r}" width="${2 * r}" height="${2 * r}" fill="${p.corrected ? '#fff' : col}" stroke="${p.corrected ? col : '#fff'}" stroke-width="${p.corrected ? 1.8 : 1}"/>`);
+        else out.push(`<circle cx="${sx(p.age)}" cy="${sy(p[k])}" r="${r}" fill="${p.corrected ? '#fff' : col}" stroke="${p.corrected ? col : '#fff'}" stroke-width="${p.corrected ? 1.8 : 1.2}"/>`);
         // bone age marker on height
         if (k === 'h' && p.ba != null && p.ba >= x0 && p.ba <= x1) {
           out.push(`<line x1="${sx(p.age)}" x2="${sx(p.ba)}" y1="${sy(p[k])}" y2="${sy(p[k])}" stroke="${T.ba}" stroke-width="1" stroke-dasharray="3 2"/>`);
@@ -126,7 +135,7 @@
     const meas = measure === 'hw' ? ['h', 'w'] : [measure];
     let lo = Infinity, hi = -Infinity;
     for (const k of meas) {
-      const zs = k === 'b' ? [G().Z_IAP[0]] : [G().Z_IAP[0], G().Z_IAP[6]];
+      const zs = k === 'h' ? [-3, G().Z_IAP[6]] : k === 'b' ? [G().Z_IAP[0]] : [G().Z_IAP[0], G().Z_IAP[6]];
       for (const z of zs) for (const [, v] of G().curve(k, sex, z, Math.max(x0, G().minAge(k)), x1)) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
       for (const p of points || []) if (p[k] != null && p.age >= x0 && p.age <= x1) { lo = Math.min(lo, p[k]); hi = Math.max(hi, p[k]); }
       if (k === 'b') for (const [, v] of G().cutoffCurve(sex, 'ob', x0, x1)) hi = Math.max(hi, v);

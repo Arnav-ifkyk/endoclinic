@@ -16,10 +16,12 @@ function loadGrowth() {
   vm.runInContext(refCode + '\nwindow.REF = REF;\n', ctx, { filename: 'refdata.js' });
   const growthCode = fs.readFileSync(path.join(root, 'growth.js'), 'utf8');
   vm.runInContext(growthCode, ctx, { filename: 'growth.js' });
-  return ctx.Growth;
+  const helpersCode = fs.readFileSync(path.join(root, 'helpers.js'), 'utf8');
+  vm.runInContext(helpersCode, ctx, { filename: 'helpers.js' });
+  return { G: ctx.Growth, H: ctx.Helpers };
 }
 
-const G = loadGrowth();
+const { G, H } = loadGrowth();
 
 function assertClose(actual, expected, tol = 1e-3, msg = '') {
   assert.ok(actual != null && Number.isFinite(actual), `Expected finite number, got ${actual} ${msg}`);
@@ -103,5 +105,53 @@ describe('MPH, BMI, age, and height velocity', () => {
     const hv = G.heightVelocity(p, vs, vs[2]);
     assert.ok(hv);
     assertClose(hv.cmPerYear, 5 / G.ageYears('2025-01-01', '2025-11-01'), 1e-4);
+  });
+});
+
+describe('Preterm corrected age, clinical flags, and duplicate detection', () => {
+  it('applies preterm corrected age under 2 y chronological age and switches off at >= 2 y', () => {
+    const p = { id: 'pt1', sex: 'M', dob: '2025-01-01', birth: { term: 'Preterm', gestWeeks: '32' } };
+    // At 1 y chrono (2026-01-01), 8 weeks correction -> ~0.847 y (~10 m)
+    const r1 = G.analyse(p, { date: '2026-01-01', height: '72', weight: '8.5' });
+    assert.equal(r1.isCorrected, true);
+    assert.ok(r1.age < 0.9 && r1.age > 0.8);
+    // At 2.5 y chrono (2027-07-01), no correction
+    const r2 = G.analyse(p, { date: '2027-07-01', height: '90', weight: '13' });
+    assert.equal(r2.isCorrected, false);
+    assertClose(r2.age, r2.chronoAge, 1e-6);
+  });
+
+  it('flags pre-term < 40 wk CGA without extrapolating WHO below 0', () => {
+    const p = { id: 'pt2', sex: 'F', dob: '2026-01-01', birth: { term: 'Preterm', gestWeeks: '32' } };
+    const r = G.analyse(p, { date: '2026-01-20', height: '44', weight: '2.1' });
+    assert.equal(r.preTermCga, true);
+    assert.equal(r.hSds, null);
+    assert.equal(r.ageText, 'Pre-term (<40 wk CGA)');
+  });
+
+  it('triggers neutral clinical flags for short stature, MPH gap, centile drop, BMI, and extreme SDS', () => {
+    const p = { id: 'fl1', sex: 'F', dob: '2013-01-01', fatherHt: '175', motherHt: '165' };
+    const v1 = { id: 'v1', date: '2024-01-01', height: '146', weight: '38' };
+    const v2 = { id: 'v2', date: '2026-01-01', height: '136', weight: '62' };
+    const flags = G.clinicalFlags(p, [v1, v2], v2, { hvThreshold: 4 });
+    const codes = flags.map(f => f.code);
+    assert.ok(codes.includes('short'));
+    assert.ok(codes.includes('mph_gap'));
+    assert.ok(codes.includes('hv_low'));
+    assert.ok(codes.includes('centile_drop'));
+    assert.ok(codes.includes('bmi'));
+
+    const vExt = { id: 'v3', date: '2026-02-01', height: '50', weight: '30' };
+    const extFlags = G.clinicalFlags(p, [vExt], vExt, { hvThreshold: 4 });
+    assert.ok(extFlags.some(f => f.code === 'extreme'));
+  });
+
+  it('detects duplicate patients by name+DOB or phone+similar name', () => {
+    const existing = [
+      { id: '1', name: 'Aarav Sharma', dob: '2018-05-10', phone: '9850631399' },
+    ];
+    assert.equal(H.findDuplicates(existing, { name: 'aarav sharma', dob: '2018-05-10', phone: '' }).length, 1);
+    assert.equal(H.findDuplicates(existing, { name: 'Aarav S', dob: '2018-05-11', phone: '+91 9850631399' }).length, 1);
+    assert.equal(H.findDuplicates(existing, { name: 'Diya Patel', dob: '2018-05-10', phone: '9850631399' }).length, 0);
   });
 });
