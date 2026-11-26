@@ -178,10 +178,10 @@
           : `<div class="empty"><div class="big">No match</div>Try part of the name or phone number</div>`}`
       : `<div class="sec-title">Today’s patients<small>${seenToday.length}</small></div>
         ${seenToday.length ? `<ul class="plist">${seenToday.map(({ p, lv }) => patientRow(p, lv)).join('')}</ul>`
-          : `<div class="empty"><div class="big">No visits today yet</div>Search above or tap “New patient” to start</div>`}
+          : `<div class="empty"><div class="big">No visits today yet</div></div>`}
         <div class="sec-title">Follow-ups due<small>${due.length}</small></div>
         ${due.length ? `<ul class="plist">${due.map(({ p, lv, status, label }) => patientRow(p, lv, `<span class="fu-badge ${status}">${esc(label)}</span>`)).join('')}</ul>`
-          : `<div class="empty"><div class="big">No follow-ups due</div>Upcoming follow-ups from visit notes appear here</div>`}`}
+          : `<div class="empty"><div class="big">No follow-ups due</div></div>`}`}
       ${syncPill()}${bottomNav('today')}`;
   }
 
