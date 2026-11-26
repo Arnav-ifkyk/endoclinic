@@ -4,14 +4,17 @@
 (function (global) {
   'use strict';
   const TABLES = ['patients', 'visits'];
+  const ALL_TABLES = ['patients', 'visits', 'appointments'];
   let dbp = null;
   function open() {
     return dbp || (dbp = new Promise((res, rej) => {
-      const r = indexedDB.open('endoclinic', 1);
+      const r = indexedDB.open('endoclinic', 2);
       r.onupgradeneeded = () => {
         const d = r.result;
-        for (const s of ['patients', 'visits', 'outbox']) d.createObjectStore(s, { keyPath: 'id' });
-        d.createObjectStore('meta', { keyPath: 'k' });
+        for (const s of ['patients', 'visits', 'appointments', 'outbox']) {
+          if (!d.objectStoreNames.contains(s)) d.createObjectStore(s, { keyPath: 'id' });
+        }
+        if (!d.objectStoreNames.contains('meta')) d.createObjectStore('meta', { keyPath: 'k' });
       };
       r.onsuccess = () => res(r.result);
       r.onerror = () => rej(r.error);
@@ -35,9 +38,9 @@
 
   // ---------------- state ----------------
   const state = {
-    patients: new Map(), visits: new Map(), cloud: null, user: null,
+    patients: new Map(), visits: new Map(), appointments: new Map(), cloud: null, user: null,
     syncing: false, lastSync: null, pending: 0, error: null,
-    settings: { textSize: 'normal', hvThreshold: 4, printLang: 'en' },
+    settings: { textSize: 'normal', hvThreshold: 4, printLang: 'en', theme: 'light' },
   };
   const listeners = new Set();
   const emit = () => listeners.forEach(f => { try { f(); } catch (e) { console.error(e); } });
@@ -48,7 +51,7 @@
   }
 
   async function load() {
-    for (const t of TABLES) for (const r of await idb.all(t)) state[t].set(r.id, r);
+    for (const t of ALL_TABLES) for (const r of await idb.all(t)) state[t].set(r.id, r);
     state.pending = (await idb.all('outbox')).length;
     state.lastSync = await meta.get('lastSyncAt');
     const savedSettings = await meta.get('uiSettings');
@@ -89,6 +92,7 @@
   const live = m => [...m.values()].filter(r => !r.deleted);
   function patients() { return live(state.patients); }
   function visitsOf(pid) { return live(state.visits).filter(v => v.patientId === pid).sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.createdAt || '').localeCompare(b.createdAt || '')); }
+  function appointments() { return live(state.appointments).sort((a, b) => (a.date || '').localeCompare(b.date || '') || (a.time || '99:99').localeCompare(b.time || '99:99') || (a.createdAt || '').localeCompare(b.createdAt || '')); }
 
   // ---------------- cloud ----------------
   const cfg = global.ENDO_CONFIG || {};
@@ -155,6 +159,28 @@
       }
       await meta.set('lastPull', newest);
       state.lastSync = new Date().toISOString(); await meta.set('lastSyncAt', state.lastSync);
+
+      // Optional appointments table sync (skips gracefully if migration not run in Supabase yet)
+      try {
+        const apItems = box.filter(b => b.table === 'appointments');
+        for (let i = 0; i < apItems.length; i += 200) {
+          const chunk = apItems.slice(i, i + 200);
+          const rows = chunk.map(b => state.appointments.get(b.rowId)).filter(Boolean)
+            .map(r => ({ id: r.id, patient_id: r.patientId || null, doc: strip(r), deleted: !!r.deleted }));
+          if (rows.length) { const { error } = await state.cloud.from('appointments').upsert(rows); if (error) throw error; }
+          for (const b of chunk) { const cur = state.appointments.get(b.rowId); if (!cur || cur._u === b.u) await idb.del('outbox', b.id); }
+        }
+        const { data: apData, error: apErr } = await state.cloud.from('appointments').select('id,doc,deleted,updated_at').gt('updated_at', sinceOverlap).order('updated_at').range(0, 999);
+        if (apErr) throw apErr;
+        for (const row of apData || []) {
+          if (pendingIds.has('appointments:' + row.id)) continue;
+          const rec = { ...row.doc, id: row.id, deleted: row.deleted };
+          await idb.put('appointments', rec); state.appointments.set(rec.id, rec);
+        }
+      } catch (apE) {
+        const msg = (apE && apE.message) || String(apE);
+        if (!/appointments|PGRST205|42P01/i.test(msg)) throw apE;
+      }
     } catch (e) {
       console.error(e); state.error = e.message || String(e);
     } finally {
@@ -168,12 +194,17 @@
 
   // ---------------- backup ----------------
   async function exportAll() {
-    return { app: 'EndoClinic', version: 1, exportedAt: new Date().toISOString(), patients: [...state.patients.values()].map(strip), visits: [...state.visits.values()].map(strip) };
+    return {
+      app: 'EndoClinic', version: 1, exportedAt: new Date().toISOString(),
+      patients: [...state.patients.values()].map(strip),
+      visits: [...state.visits.values()].map(strip),
+      appointments: [...state.appointments.values()].map(strip),
+    };
   }
   async function importAll(data) {
     if (!data || data.app !== 'EndoClinic') throw new Error('This is not an EndoClinic backup file.');
     let n = 0;
-    for (const t of TABLES) for (const r of data[t] || []) {
+    for (const t of ALL_TABLES) for (const r of data[t] || []) {
       const cur = state[t].get(r.id);
       if (!cur) { await save(t, r); n++; }
     }
@@ -183,6 +214,6 @@
   // persistent storage so Android does not evict the local copy
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 
-  global.Store = { state, load, save, remove, patients, visitsOf, initCloud, signIn, signOut, sync, cloudConfigured, exportAll, importAll,
+  global.Store = { state, load, save, remove, patients, visitsOf, appointments, initCloud, signIn, signOut, sync, cloudConfigured, exportAll, importAll,
     setSetting, pendingItems, onChange: f => listeners.add(f), uuid };
 })(window);

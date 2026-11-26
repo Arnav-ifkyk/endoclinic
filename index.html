@@ -219,6 +219,35 @@ details.more .hint{font-size:14px;color:var(--muted);margin:-4px 0 12px}
 .pending-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .pending-item:last-child{border-bottom:0}
 .seg.sm button{height:40px;font-size:14px}
+
+/* calendar & appointments */
+.cal{background:var(--card);backdrop-filter:blur(12px);border-radius:var(--r-lg);border:1px solid var(--card-border);box-shadow:var(--shadow);padding:16px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.cal-title{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--ink)}
+.cal-nav{display:flex;gap:8px}
+.cal-btn{min-width:44px;height:44px;padding:0 12px;border-radius:var(--r-sm);border:1px solid var(--card-border);background:var(--surface-2);color:var(--ink);font-weight:600;font-size:14px;cursor:pointer;display:grid;place-items:center}
+.cal-dow,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-dow{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.cal-day{min-height:46px;border:1px solid transparent;border-radius:var(--r-sm);background:transparent;color:var(--ink);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;padding:2px;transition:background-color .15s var(--ease),border-color .15s var(--ease)}
+.cal-day.out{color:var(--muted);opacity:.45}
+.cal-day.today{border-color:var(--pebble-gold);font-weight:700}
+.cal-day.on{background:linear-gradient(135deg,var(--pebble-navy),var(--pebble-indigo));color:#fff;border-color:transparent;font-weight:700}
+.cal-dots{display:flex;gap:3px;height:6px;align-items:center}
+.cal-dots i{width:5px;height:5px;border-radius:50%;display:block}
+.cal-dots i.ap{background:var(--pebble-teal)}
+.cal-dots i.fu{background:var(--pebble-gold)}
+.cal-day.on .cal-dots i.ap,.cal-day.on .cal-dots i.fu{background:#fff}
+.appt-card{display:flex;flex-direction:column;gap:10px;background:var(--card);backdrop-filter:blur(12px);border-radius:var(--r-lg);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--card-border)}
+.appt-top{display:flex;align-items:center;gap:12px}
+.appt-time{min-width:68px;padding:6px 8px;border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink);font-size:13px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.appt-acts{display:flex;flex-wrap:wrap;gap:8px}
+.appt-acts button{min-height:42px;padding:0 12px;border-radius:var(--r-sm);border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);font-size:14px;font-weight:600;cursor:pointer}
+.appt-acts button.pri{background:var(--pebble-navy);color:#fff;border-color:transparent}
+.appt-acts button.done{color:var(--leaf)}
+.appt-acts button.del{color:var(--alert-ink)}
+.pick-list{max-height:240px;overflow-y:auto;display:grid;gap:6px;margin-top:8px}
+.pick-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--card);cursor:pointer;text-align:left;min-height:52px}
+.pick-item.on{border-color:var(--pebble-teal);background:rgba(27,107,110,.10)}
 .dot{width:8px;height:8px;border-radius:50%;background:#2e8b57}
 .dot.wait{background:var(--marigold)}.dot.off{background:#9b92a8}.dot.bad{background:var(--brick)}
 .demo{background:#fbf0d9;color:#6d4a05;border:1px solid rgba(154,103,8,.2);border-radius:var(--r);padding:12px 16px;font-size:14px;font-weight:500;margin-top:12px}

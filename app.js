@@ -25,11 +25,16 @@
     sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>',
     home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
     users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>',
+    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
     bar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>',
   };
 
   // ---------- ui state ----------
-  const ui = { q: '', tab: {}, full: {}, view: '', swWaiting: null };
+  const ui = {
+    q: '', tab: {}, full: {}, view: '', swWaiting: null,
+    apDate: today(), apMonth: today().slice(0, 7), apView: 'day',
+    bookTab: 'existing', bookPid: '', bookPickQ: '', prefillPatient: null,
+  };
   let toastT;
   function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
   function modal(title, text, buttons) {
@@ -61,7 +66,7 @@
     return ui.swWaiting ? `<button type="button" class="update-bar" data-act="applyUpdate">New version available · Tap to update<span class="pill">Update</span></button>` : '';
   }
   function bottomNav(active) {
-    const tabs = [['today', 'Today', I.home, '/'], ['patients', 'Patients', I.users, '/patients'], ['reports', 'Reports', I.bar, '/reports'], ['settings', 'Settings', I.gear, '/settings']];
+    const tabs = [['today', 'Today', I.home, '/'], ['appointments', 'Appointments', I.cal, '/appointments'], ['patients', 'Patients', I.users, '/patients'], ['settings', 'Settings', I.gear, '/settings']];
     return `<nav class="bnav" aria-label="Primary"><div class="bnav-in">${tabs.map(([k, lbl, ic, hash]) =>
       `<button type="button" class="${active === k ? 'on' : ''}" data-act="nav" data-to="${hash}" ${active === k ? 'aria-current="page"' : ''}>${ic}<span>${lbl}</span></button>`
     ).join('')}</div></nav>`;
@@ -108,6 +113,111 @@
       </form>
       <p class="fineprint" style="text-align:center">You stay signed in on this phone after the first time</p>
     </div>`;
+  }
+
+  function renderCalendar(monthYm, selectedIso, appts, followUps) {
+    const [yr, mo] = monthYm.split('-').map(Number);
+    const first = new Date(Date.UTC(yr, mo - 1, 1));
+    const startDow = (first.getUTCDay() + 6) % 7; // Monday = 0
+    const start = new Date(Date.UTC(yr, mo - 1, 1 - startDow));
+    const t = today();
+    const apDates = new Set(appts.filter(a => a.status !== 'done').map(a => a.date));
+    const fuDates = new Set(followUps.map(f => f.date));
+    const cells = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start.getTime() + i * 86400000);
+      const iso = d.toISOString().slice(0, 10);
+      const inMonth = d.getUTCMonth() === mo - 1;
+      const cls = ['cal-day', inMonth ? '' : 'out', iso === t ? 'today' : '', iso === selectedIso ? 'on' : ''].filter(Boolean).join(' ');
+      const dots = `${apDates.has(iso) ? '<i class="ap"></i>' : ''}${fuDates.has(iso) ? '<i class="fu"></i>' : ''}`;
+      cells.push(`<button type="button" class="${cls}" data-act="calDay" data-d="${iso}"><span>${d.getUTCDate()}</span><span class="cal-dots">${dots}</span></button>`);
+    }
+    const title = `${MON[mo - 1]} ${yr}`;
+    return `<div class="cal">
+      <div class="cal-head"><div class="cal-title">${title}</div><div class="cal-nav">
+        <button type="button" class="cal-btn" data-act="calMonth" data-dir="-1" aria-label="Previous month">‹</button>
+        <button type="button" class="cal-btn" data-act="calToday">Today</button>
+        <button type="button" class="cal-btn" data-act="calMonth" data-dir="1" aria-label="Next month">›</button>
+      </div></div>
+      <div class="cal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      <div class="cal-grid">${cells.join('')}</div>
+    </div>`;
+  }
+
+  function viewAppointments() {
+    const t = today();
+    const appts = S.appointments();
+    const fus = followUpsDue();
+    const sel = ui.apDate || t;
+    const shownAppts = ui.apView === 'upcoming'
+      ? appts.filter(a => a.date >= t && a.status !== 'done')
+      : appts.filter(a => a.date === sel);
+    const shownFus = ui.apView === 'day' ? fus.filter(f => f.date === sel) : [];
+    return `<div class="top"><span style="width:56px"></span><div class="ttl">Appointments</div><span style="width:56px"></span></div>
+      ${updateBanner()}
+      ${renderCalendar(ui.apMonth || sel.slice(0, 7), sel, appts, fus)}
+      <div style="margin-top:12px"><button class="cta" data-act="bookNew"><span class="plus">+</span>Book appointment</button></div>
+      <div class="seg sm" style="margin-top:12px">
+        <button type="button" class="${ui.apView === 'day' ? 'on' : ''}" data-act="apView" data-v="day">${nice(sel)}</button>
+        <button type="button" class="${ui.apView === 'upcoming' ? 'on' : ''}" data-act="apView" data-v="upcoming">All upcoming</button>
+      </div>
+      <div class="sec-title">${ui.apView === 'upcoming' ? 'Upcoming appointments' : 'Schedule for ' + nice(sel)}<small>${shownAppts.length}</small></div>
+      ${shownAppts.length ? `<div style="display:grid;gap:8px">${shownAppts.map(a => {
+        const p = a.patientId ? S.state.patients.get(a.patientId) : null;
+        const nm = p ? p.name : a.name;
+        const phone = (p && p.phone) || a.phone || '';
+        const isDone = a.status === 'done';
+        return `<div class="appt-card"${isDone ? ' style="opacity:.65"' : ''}>
+          <div class="appt-top"><div class="appt-time">${esc(a.time || 'Anytime')}</div>
+            <div class="grow"><div class="nm" style="font-weight:600">${esc(nm)}</div>
+              <div class="sub" style="font-size:14px;color:var(--ink2)">${ui.apView === 'upcoming' ? nice(a.date) + ' · ' : ''}${a.kind === 'new' ? 'New patient' : 'Existing'}${phone ? ' · ' + esc(phone) : ''}${a.reason ? ' · ' + esc(a.reason) : ''}</div></div>
+            <span class="chip ${a.kind === 'new' ? 'gold' : ''}">${isDone ? 'Done' : a.kind === 'new' ? 'New' : 'Existing'}</span></div>
+          <div class="appt-acts">
+            ${p ? `<button type="button" class="pri" data-act="open" data-id="${p.id}">Open patient</button><button type="button" data-act="newVisit" data-id="${p.id}">Add visit</button>`
+              : `<button type="button" class="pri" data-act="registerAppt" data-a="${a.id}">Register &amp; visit</button>`}
+            ${!isDone ? `<button type="button" class="done" data-act="doneAppt" data-a="${a.id}">Mark done</button>` : ''}
+            <button type="button" class="del" data-act="delAppt" data-a="${a.id}">Cancel</button>
+          </div></div>`;
+      }).join('')}</div>` : `<div class="empty"><div class="big">No appointments</div></div>`}
+      ${shownFus.length ? `<div class="sec-title">Follow-ups due<small>${shownFus.length}</small></div><ul class="plist">${shownFus.map(({ p, lv, status, label }) => patientRow(p, lv, `<span class="fu-badge ${status}">${esc(label)}</span>`)).join('')}</ul>` : ''}
+      ${syncPill()}${bottomNav('appointments')}`;
+  }
+
+  function viewBookAppointment(prePid) {
+    if (prePid) { ui.bookTab = 'existing'; ui.bookPid = prePid; }
+    const isNew = ui.bookTab === 'new';
+    const q = ui.bookPickQ.trim().toLowerCase();
+    const pts = S.patients().filter(p => !q || (p.name || '').toLowerCase().includes(q) || (p.phone || '').includes(q) || (p.code || '').toLowerCase().includes(q)).slice(0, 30);
+    const selP = ui.bookPid ? S.state.patients.get(ui.bookPid) : null;
+    const times = ['10:00', '11:00', '12:00', '16:00', '17:00', '18:00'];
+    return `<div class="top"><button class="iconbtn" data-act="nav" data-to="/appointments" aria-label="Back">${I.back}</button><div class="ttl">Book appointment</div><span style="width:56px"></span></div>
+      <div class="seg" style="margin-top:8px">
+        <button type="button" class="${!isNew ? 'on' : ''}" data-act="bookTab" data-v="existing">Existing patient</button>
+        <button type="button" class="${isNew ? 'on' : ''}" data-act="bookTab" data-v="new">New patient</button>
+      </div>
+      <form class="form" id="apForm" autocomplete="off" style="margin-top:14px">
+        ${!isNew ? `<div>
+          <div class="search" style="margin:0">${I.search}<input id="apPickQ" type="search" placeholder="Search existing patient" value="${esc(ui.bookPickQ)}"></div>
+          ${selP ? `<div class="pick-item on" style="margin-top:8px"><div><b>${esc(selP.name)}</b><div style="font-size:13px;color:var(--ink2)">${esc(selP.code || '')} ${selP.phone ? '· ' + esc(selP.phone) : ''}</div></div><span class="chip ok">Selected</span></div>` : ''}
+          <div class="pick-list">${pts.map(p => `<button type="button" class="pick-item ${ui.bookPid === p.id ? 'on' : ''}" data-act="pickPatient" data-id="${p.id}">
+            <span><b>${esc(p.name)}</b><small style="display:block;color:var(--muted)">${p.sex === 'F' ? 'Girl' : 'Boy'}${p.phone ? ' · ' + esc(p.phone) : ''}</small></span>
+            <span class="chip">${esc(p.code || '')}</span></button>`).join('')}</div>
+          <input type="hidden" name="ap_pid" value="${esc(ui.bookPid)}">
+        </div>` : `
+          <div class="field"><label>Child’s full name</label><input name="ap_name" autocapitalize="words" required></div>
+          <div><span class="flabel">Boy or girl</span><div class="toggle" data-sex>
+            <button type="button" class="M" data-act="apSex" data-v="M"><span class="pebble M"><span>♂</span></span>Boy</button>
+            <button type="button" class="F" data-act="apSex" data-v="F"><span class="pebble F"><span>♀</span></span>Girl</button></div>
+            <input type="hidden" name="ap_sex" value=""></div>
+          <div class="field"><label>Phone</label><input name="ap_phone" inputmode="tel"></div>`}
+        <div><span class="flabel">Appointment date</span>${dateTriple('ap_date', ui.apDate || today(), true)}</div>
+        <div class="field"><label>Time (optional)</label>
+          <div class="choices" style="margin-bottom:8px">${times.map(tm => `<button type="button" data-act="apTime" data-v="${tm}">${tm}</button>`).join('')}</div>
+          <input name="ap_time" type="time"></div>
+        <div class="field"><label>Reason / note (optional)</label><input name="ap_reason" placeholder="e.g. Follow-up, growth check"></div>
+        <div class="err" id="apErr"></div>
+      </form>
+      <div class="stickybar"><div class="inner"><button class="cta gold" data-act="saveAppt">Save appointment</button></div></div>`;
   }
 
   function patientRow(p, lv, extraBadge) {
@@ -240,6 +350,7 @@
         <div class="chips">${p.code ? `<span class="chip">${esc(p.code)}</span>` : ''}${p.birth && p.birth.term === 'Preterm' && p.birth.gestWeeks ? `<span class="chip">Preterm ${esc(p.birth.gestWeeks)} wk</span>` : ''}${mph ? `<span class="chip gold">MPH ${n1(mph.value)} cm</span><span class="chip">Target ${n1(mph.low)}–${n1(mph.high)}</span>` : '<span class="chip">Parents’ heights not entered</span>'}</div></div>
       <div style="margin-top:12px"><button class="cta gold" data-act="newVisit" data-id="${id}"><span class="plus">+</span>Add today’s visit</button></div>
       <div class="btnrow"><button class="btn" data-act="printOpd" data-id="${id}">${I.print}OPD sheet</button><button class="btn" data-act="printCharts" data-id="${id}" ${vs.length ? '' : 'disabled style="opacity:.5"'}>${I.chart}Growth charts</button></div>
+      <div style="margin-top:8px"><button class="btn" style="width:100%" data-act="bookFor" data-id="${id}">${I.cal}Book appointment</button></div>
       ${flags.length ? `<div class="flags">${flags.map(f => `<span class="flag ${f.level}">${esc(f.text)}</span>`).join('')}</div>` : ''}
 
       <div class="sec-title">Latest visit<small>${lv ? nice(lv.date) + ' · ' + a.ageText + (a.isCorrected ? ' (corr)' : '') : ''}</small></div>
@@ -275,7 +386,8 @@
   }
 
   function viewPatientForm(id) {
-    const p = id ? S.state.patients.get(id) : { sex: '' };
+    const pre = !id ? ui.prefillPatient : null;
+    const p = id ? S.state.patients.get(id) : { sex: (pre && pre.sex) || '', name: (pre && pre.name) || '', phone: (pre && pre.phone) || '' };
     const b = p.birth || {}, h = p.history || {};
     return `<div class="top"><button class="iconbtn" data-act="${id ? 'open' : 'home'}" data-id="${id || ''}" aria-label="Back">${I.back}</button><div class="ttl">${id ? 'Edit patient' : 'New patient'}</div><span style="width:52px"></span></div>
     <form class="form" id="pForm" autocomplete="off">
@@ -365,6 +477,7 @@
         ).join('')}</div>
       </div>
       <div class="card settings">
+        <div class="row" data-act="nav" data-to="/reports"><span class="ic">${I.bar}</span><div>Reports<small>Patient counts and CSV export</small></div></div>
         <div class="row" data-act="printBlank"><span class="ic">${I.sheet}</span><div>Print blank OPD sheet<small>Front and back, A4</small></div></div>
         ${S.cloudConfigured ? `<div class="row" data-act="sync"><span class="ic">${I.sync}</span><div>Sync now<small>${st.lastSync ? 'Last synced ' + new Date(st.lastSync).toLocaleString('en-IN') : 'Not synced yet'} · ${st.pending} waiting${st.user ? ' · ' + esc(st.user.email) : ''}</small></div></div>` : ''}
         <div class="row" data-act="showPending"><span class="ic">${I.up}</span><div>Pending uploads<small>${st.pending} record${st.pending === 1 ? '' : 's'} waiting to upload</small></div></div>
@@ -387,6 +500,8 @@
     const parts = h.split('/').filter(Boolean);
     if (S.state.cloud && !S.state.user) return ['login'];
     if (!parts.length || parts[0] === 'today') return ['today'];
+    if (parts[0] === 'appointments') return ['appointments'];
+    if (parts[0] === 'book') return ['book', parts[1] || null];
     if (parts[0] === 'patients') return ['patients'];
     if (parts[0] === 'reports') return ['reports'];
     if (parts[0] === 'new') return ['pform'];
@@ -401,6 +516,8 @@
     ui.view = r[0];
     $app.innerHTML = r[0] === 'login' ? viewLogin()
       : r[0] === 'today' ? viewToday()
+      : r[0] === 'appointments' ? viewAppointments()
+      : r[0] === 'book' ? viewBookAppointment(r[1])
       : r[0] === 'patients' ? viewPatients()
       : r[0] === 'reports' ? viewReports()
       : r[0] === 'patient' ? viewPatient(r[1])
@@ -412,7 +529,7 @@
     if (r[0] === 'vform') updateLive();
   }
   window.addEventListener('hashchange', () => render(false));
-  S.onChange(() => { if (['today', 'patients', 'reports', 'patient', 'settings', 'login'].includes(ui.view)) { const f = document.activeElement && document.activeElement.id === 'q'; render(true); if (f) { const q = document.getElementById('q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); } } });
+  S.onChange(() => { if (['today', 'appointments', 'patients', 'reports', 'patient', 'settings', 'login'].includes(ui.view)) { const f = document.activeElement && document.activeElement.id === 'q'; render(true); if (f) { const q = document.getElementById('q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); } } });
 
   // ---------- live calculations ----------
   function updateMph() {
@@ -467,8 +584,45 @@
     if (!id) rec.id = S.uuid();
     if (!rec.code) rec.code = 'PE-' + rec.id.replace(/-/g, '').slice(0, 5).toUpperCase();
     const saved = await S.save('patients', rec);
+    if (!id && ui.prefillPatient && ui.prefillPatient.apptId) {
+      const ap = S.state.appointments.get(ui.prefillPatient.apptId);
+      if (ap) await S.save('appointments', { ...ap, patientId: saved.id, kind: 'existing', status: 'done' });
+      ui.prefillPatient = null;
+    }
     toast('Patient saved');
     go(id ? '/p/' + id : '/p/' + saved.id + '/visit/new');
+  }
+
+  async function saveAppt() {
+    const f = document.getElementById('apForm'), err = document.getElementById('apErr');
+    const isNew = ui.bookTab === 'new';
+    const date = readDate(f, 'ap_date');
+    const pid = isNew ? null : val(f, 'ap_pid');
+    const name = isNew ? val(f, 'ap_name') : ((S.state.patients.get(pid) || {}).name || '');
+    const problems = [];
+    if (!isNew && !pid) problems.push('an existing patient');
+    if (isNew && !name) problems.push('the child’s name');
+    if (!date) problems.push('a valid appointment date');
+    if (problems.length) { err.textContent = 'Please enter ' + problems.join(', ') + '.'; return; }
+    await S.save('appointments', {
+      id: S.uuid(),
+      kind: isNew ? 'new' : 'existing',
+      patientId: pid || null,
+      name,
+      sex: isNew ? (f.ap_sex && f.ap_sex.value) : '',
+      phone: isNew ? val(f, 'ap_phone') : '',
+      date,
+      time: val(f, 'ap_time'),
+      reason: val(f, 'ap_reason'),
+      status: 'scheduled',
+    });
+    ui.apDate = date;
+    ui.apMonth = date.slice(0, 7);
+    ui.apView = 'day';
+    ui.bookPid = '';
+    ui.bookPickQ = '';
+    toast('Appointment saved');
+    go('/appointments');
   }
 
   async function saveVisit(pid, vid) {
@@ -555,7 +709,42 @@
         if (act2 === 'sync') { S.sync(); toast('Syncing…'); }
         break;
       }
-      case 'newPatient': go('/new'); break;
+      case 'newPatient': ui.prefillPatient = null; go('/new'); break;
+      case 'bookNew': ui.bookPid = ''; ui.bookPickQ = ''; go('/book'); break;
+      case 'bookFor': go('/book/' + id); break;
+      case 'bookTab': ui.bookTab = el.dataset.v; render(true); break;
+      case 'pickPatient': ui.bookPid = el.dataset.id; render(true); break;
+      case 'apSex': {
+        const f = document.getElementById('apForm'); f.ap_sex.value = el.dataset.v;
+        f.querySelectorAll('[data-sex] button').forEach(b => { b.className = b.dataset.v + (b.dataset.v === el.dataset.v ? ' on ' + b.dataset.v : ''); });
+        break;
+      }
+      case 'apTime': { const f = document.getElementById('apForm'); f.ap_time.value = el.dataset.v; break; }
+      case 'saveAppt': e.preventDefault(); saveAppt(); break;
+      case 'calDay': ui.apDate = el.dataset.d; ui.apMonth = el.dataset.d.slice(0, 7); ui.apView = 'day'; render(true); break;
+      case 'calToday': ui.apDate = today(); ui.apMonth = today().slice(0, 7); ui.apView = 'day'; render(true); break;
+      case 'calMonth': {
+        const [y, m] = (ui.apMonth || today().slice(0, 7)).split('-').map(Number);
+        const dt = new Date(Date.UTC(y, m - 1 + Number(el.dataset.dir), 1));
+        ui.apMonth = dt.toISOString().slice(0, 7);
+        render(true); break;
+      }
+      case 'apView': ui.apView = el.dataset.v; render(true); break;
+      case 'registerAppt': {
+        const ap = S.state.appointments.get(el.dataset.a);
+        if (ap) { ui.prefillPatient = { name: ap.name, sex: ap.sex, phone: ap.phone, apptId: ap.id }; go('/new'); }
+        break;
+      }
+      case 'doneAppt': {
+        const ap = S.state.appointments.get(el.dataset.a);
+        if (ap) { await S.save('appointments', { ...ap, status: 'done' }); toast('Marked done'); }
+        break;
+      }
+      case 'delAppt': {
+        const ok = await modal('Cancel this appointment?', '', [{ label: 'Cancel appointment', value: true, cls: 'cta' }, { label: 'Keep', value: false, cls: 'btn' }]);
+        if (ok) { await S.remove('appointments', el.dataset.a); toast('Appointment cancelled'); }
+        break;
+      }
       case 'open': go(id ? '/p/' + id : '/'); break;
       case 'editPatient': go('/p/' + id + '/edit'); break;
       case 'newVisit': go('/p/' + id + '/visit/new'); break;
@@ -599,6 +788,7 @@
   $app.addEventListener('input', e => {
     const t = e.target;
     if (t.id === 'q') { ui.q = t.value; const pos = t.selectionStart; render(true); const q = document.getElementById('q'); q.focus(); q.setSelectionRange(pos, pos); return; }
+    if (t.id === 'apPickQ') { ui.bookPickQ = t.value; const pos = t.selectionStart; render(true); const q = document.getElementById('apPickQ'); q.focus(); q.setSelectionRange(pos, pos); return; }
     // auto-advance in DD / MM / YYYY boxes
     const box = t.closest('[data-date]');
     if (box && t.maxLength > 0 && t.value.length >= t.maxLength) { const ins = [...box.querySelectorAll('input')]; const i = ins.indexOf(t); if (ins[i + 1]) ins[i + 1].focus(); }
