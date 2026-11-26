@@ -525,8 +525,23 @@ if(reduce||!window.gsap){
   }
   document.querySelectorAll('path.draw').forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.style.opacity=1;
     gsap.to(p,{strokeDashoffset:0,ease:'none',scrollTrigger:{trigger:p.closest('svg'),start:'top 88%',end:'center 45%',scrub:.6,invalidateOnRefresh:true}})});
-  gsap.fromTo(stackCards,{rotate:0,xPercent:0,yPercent:0},{rotate:i=>FAN[i].r,xPercent:i=>FAN[i].x,yPercent:i=>FAN[i].y,ease:'power2.out',
-    scrollTrigger:{trigger:'#stack',start:'top 80%',end:'center 45%',scrub:.8,invalidateOnRefresh:true}});
+  stackCards.forEach((c,i)=>gsap.set(c,{rotate:FAN[i].r,xPercent:FAN[i].x,yPercent:FAN[i].y,zIndex:i+1}));
+  const shuf=gsap.timeline({scrollTrigger:{trigger:'#stack',start:'top 82%',end:'bottom 22%',scrub:.6,invalidateOnRefresh:true}});
+  shuf
+    .to(stackCards[2],{xPercent:36,yPercent:-10,rotate:14,scale:.95,duration:.22,ease:'power2.out'})
+    .set(stackCards[2],{zIndex:1})
+    .set(stackCards[1],{zIndex:3})
+    .set(stackCards[0],{zIndex:2})
+    .to(stackCards[2],{xPercent:FAN[0].x,yPercent:FAN[0].y,rotate:FAN[0].r,scale:1,duration:.24,ease:'power2.inOut'})
+    .to(stackCards[1],{xPercent:FAN[2].x,yPercent:FAN[2].y,rotate:FAN[2].r,duration:.24,ease:'power2.out'},'<')
+    .to(stackCards[0],{xPercent:FAN[1].x,yPercent:FAN[1].y,rotate:FAN[1].r,duration:.24,ease:'power2.out'},'<')
+    .to(stackCards[1],{xPercent:-36,yPercent:-10,rotate:-14,scale:.95,duration:.22,ease:'power2.out'},'+=.08')
+    .set(stackCards[1],{zIndex:1})
+    .set(stackCards[0],{zIndex:3})
+    .set(stackCards[2],{zIndex:2})
+    .to(stackCards[1],{xPercent:FAN[0].x,yPercent:FAN[0].y,rotate:FAN[0].r,scale:1,duration:.24,ease:'power2.inOut'})
+    .to(stackCards[0],{xPercent:FAN[2].x,yPercent:FAN[2].y,rotate:FAN[2].r,duration:.24,ease:'power2.out'},'<')
+    .to(stackCards[2],{xPercent:FAN[1].x,yPercent:FAN[1].y,rotate:FAN[1].r,duration:.24,ease:'power2.out'},'<');
   document.querySelectorAll('.panel').forEach((p,i,all)=>{if(i===all.length-1)return;
     gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true,invalidateOnRefresh:true}});
     gsap.to(p.querySelector('.cap'),{opacity:0,y:-24,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top 45%',scrub:true,invalidateOnRefresh:true}})});
