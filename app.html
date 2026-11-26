@@ -56,7 +56,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 
 /* reusable pebble ring (used only on sign-in logo, sync spinner, and patient hero avatar) */
 .pebble-ring{position:relative;display:inline-grid;place-items:center;padding:3px;border-radius:999px}
-.pebble-ring::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:3px;background:conic-gradient(from 0deg,var(--pebble-navy),var(--pebble-green),var(--pebble-gold),var(--pebble-amber),var(--pebble-teal),var(--pebble-rust),var(--pebble-indigo),var(--pebble-plum),var(--pebble-navy));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.pebble-ring::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2.5px;background:linear-gradient(135deg,var(--marigold),var(--marigold-d));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .sync-ring{width:16px;height:16px;padding:2px;flex:none}
 .sync-ring::before{padding:2px;animation:spinSlow 2.4s linear infinite}
 
