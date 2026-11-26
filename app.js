@@ -31,7 +31,7 @@
 
   // ---------- ui state ----------
   const ui = {
-    q: '', tab: {}, full: {}, view: '', swWaiting: null,
+    q: '', tab: {}, full: {}, zoom: {}, view: '', swWaiting: null,
     apDate: today(), apMonth: today().slice(0, 7), apView: 'day',
     bookTab: 'existing', bookPid: '', bookPickQ: '', prefillPatient: null,
   };
@@ -327,13 +327,13 @@
     const mph = G.mph(p.sex, G.num(p.fatherHt), G.num(p.motherHt));
     const hv = lv ? G.heightVelocity(p, vs, lv) : null;
     const ageNow = G.ageText(G.ageYears(p.dob, today()));
-    const tab = ui.tab[id] || 'h', full = !!ui.full[id];
+    const tab = ui.tab[id] || 'h', zLvl = ui.full[id] ? 0 : (ui.zoom[id] || 1), full = zLvl === 0;
     const pts = points(p);
-    let chart = '';
-    if (pts.length || true) {
-      const w = window.Charts.windowFor(tab, p.sex, pts, full, tab === 'h' ? mph : null);
-      chart = window.Charts.render({ id: 'scr', mode: 'screen', measure: tab, sex: p.sex, points: pts, mph: tab === 'h' ? mph : null, ...w, W: 360, H: 330 });
-    }
+    const renderChart = (W, H, cid) => {
+      const w = window.Charts.windowFor(tab, p.sex, pts, full, tab === 'h' ? mph : null, zLvl);
+      return window.Charts.render({ id: cid, mode: 'screen', measure: tab, sex: p.sex, points: pts, mph: tab === 'h' ? mph : null, showPointLabels: zLvl >= 2, ...w, W, H });
+    };
+    const chart = renderChart(360, 330, 'scr');
     const zsc = z => z == null ? '' : `SDS ${sd(z)} <span class="c">· ${G.centileText(z)}</span>`;
     const diff = a && a.hSds != null && mph ? a.hSds - mph.sds : null;
     const flags = lv ? G.clinicalFlags(p, vs, lv, { hvThreshold: (S.state.settings && S.state.settings.hvThreshold) || 4 }) : [];
@@ -363,14 +363,19 @@
         <div class="seg">${[['h', 'Height'], ['w', 'Weight'], ['b', 'BMI']].map(([k, l]) => `<button class="${tab === k ? 'on' : ''}" data-act="tab" data-id="${id}" data-k="${k}">${l}</button>`).join('')}</div>
         <div class="chartbox">${chart}</div>
         <div class="charttools"><div class="legend"><span><i style="background:${tab === 'w' ? '#1f7a74' : '#c94b24'}"></i>${esc(p.name.split(' ')[0])}</span>${tab === 'h' ? '<span><i style="background:#c81e1e"></i>−2.25/−2.5/−3 SD</span>' : ''}${tab === 'h' && mph ? '<span><i style="background:#b07a0e;border-radius:2px;transform:rotate(45deg)"></i>MPH</span>' : ''}${tab === 'h' && vs.some(v => v.boneAge) ? '<span><i style="border:2px solid #2f3c9e;background:#fff"></i>Bone age</span>' : ''}${pts.some(q => q.corrected) ? '<span><i style="border:2px solid #c94b24;background:#fff"></i>Corrected (&lt;2 y)</span>' : ''}${tab === 'b' ? '<span><i style="background:#e88a1a"></i>23</span><span><i style="background:#d1342f"></i>27</span>' : ''}</div>
-          <button class="link" data-act="zoom" data-id="${id}">${full ? 'Zoom to patient' : 'Show 0–18 years'}</button></div>
+          <div class="zoombar">
+            <button class="zbtn" data-act="zoomOut" data-id="${id}" ${zLvl <= 0 ? 'disabled' : ''} aria-label="Zoom out">−</button>
+            <button class="zbtn ${zLvl >= 2 ? 'on' : ''}" data-act="zoomIn" data-id="${id}" ${zLvl >= 3 ? 'disabled' : ''} aria-label="Zoom in">+ ${zLvl >= 2 ? zLvl + '×' : 'Zoom'}</button>
+            <button class="zbtn" data-act="zoom" data-id="${id}">${full ? 'Patient' : '0–18 y'}</button>
+            <button class="zbtn" data-act="zoomModal" data-id="${id}" aria-label="Expand chart">⤢</button>
+          </div></div>
       </div>
 
       <div class="sec-title">All visits<small>${vs.length}</small></div>
       ${vs.length ? `<div class="card"><ul class="vlist">${vs.slice().reverse().map(v => {
         const r = G.analyse(p, v); const [y, m, d] = v.date.split('-');
         return `<li class="vrow" data-act="editVisit" data-id="${id}" data-v="${v.id}"><div class="d">${+d} ${MON[+m - 1]}<small>${y}</small></div>
-          <div class="m"><b>${n1(r.height)}</b> cm · <b>${n1(r.weight)}</b> kg · BMI <b>${n1(r.bmi)}</b><br>${r.ageText} · Ht SDS ${sd(r.hSds)}</div><div style="color:var(--muted)">›</div></li>`;
+          <div class="m"><b>${n1(r.height)}</b> cm · <b>${n1(r.weight)}</b> kg · BMI <b>${n1(r.bmi)}</b><span class="sub">${r.ageText} · Ht SDS ${sd(r.hSds)}</span></div><div style="color:var(--ink2);font-size:20px;font-weight:600">›</div></li>`;
       }).join('')}</ul></div>` : ''}
       ${syncPill()}`;
   }
@@ -653,6 +658,38 @@
     const p = S.state.patients.get(pid);
     window.Print.doPrint(window.Print.chartPages(p, visitsOf(pid)));
   }
+  function openChartModal(pid) {
+    const p = S.state.patients.get(pid); if (!p) return;
+    const tab = ui.tab[pid] || 'h';
+    const pts = points(p), mph = G.mph(p.sex, G.num(p.fatherHt), G.num(p.motherHt));
+    const m = document.createElement('div'); m.className = 'modal chart-modal';
+    const draw = () => {
+      const zLvl = ui.full[pid] ? 0 : (ui.zoom[pid] || 1), full = zLvl === 0;
+      const w = window.Charts.windowFor(tab, p.sex, pts, full, tab === 'h' ? mph : null, zLvl);
+      const svg = window.Charts.render({ id: 'mdl', mode: 'screen', measure: tab, sex: p.sex, points: pts, mph: tab === 'h' ? mph : null, showPointLabels: zLvl >= 2, ...w, W: 480, H: 420 });
+      m.innerHTML = `<div class="sheet-in"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <h3 style="margin:0">${esc(p.name)} · ${{ h: 'Height', w: 'Weight', b: 'BMI' }[tab]}</h3>
+        <button class="zbtn" data-mact="close" aria-label="Close">✕</button></div>
+        <div class="chartbox">${svg}</div>
+        <div class="zoombar" style="justify-content:center;margin-top:10px">
+          <button class="zbtn" data-mact="out" ${zLvl <= 0 ? 'disabled' : ''}>− Zoom out</button>
+          <button class="zbtn ${zLvl >= 2 ? 'on' : ''}" data-mact="in" ${zLvl >= 3 ? 'disabled' : ''}>+ Zoom in ${zLvl >= 2 ? `(${zLvl}×)` : ''}</button>
+          <button class="zbtn" data-mact="full">${full ? 'Patient' : '0–18 y'}</button>
+        </div></div>`;
+    };
+    m.addEventListener('click', e => {
+      if (e.target === m) { m.remove(); render(true); return; }
+      const b = e.target.closest('[data-mact]'); if (!b) return;
+      const act = b.dataset.mact;
+      if (act === 'close') { m.remove(); render(true); return; }
+      if (act === 'in') { ui.full[pid] = false; ui.zoom[pid] = Math.min(3, (ui.zoom[pid] || 1) + 1); }
+      else if (act === 'out') { const c = ui.full[pid] ? 0 : (ui.zoom[pid] || 1); if (c <= 1) { ui.full[pid] = true; ui.zoom[pid] = 1; } else { ui.full[pid] = false; ui.zoom[pid] = c - 1; } }
+      else if (act === 'full') { ui.full[pid] = !ui.full[pid]; if (!ui.full[pid] && !ui.zoom[pid]) ui.zoom[pid] = 1; }
+      draw();
+    });
+    draw();
+    document.body.appendChild(m);
+  }
 
   async function shareOrDownload(name, text, type) {
     const blob = new Blob([text], { type });
@@ -738,7 +775,14 @@
       case 'newVisit': go('/p/' + id + '/visit/new'); break;
       case 'editVisit': go('/p/' + id + '/visit/' + el.dataset.v); break;
       case 'tab': ui.tab[id] = el.dataset.k; render(true); break;
-      case 'zoom': ui.full[id] = !ui.full[id]; render(true); break;
+      case 'zoom': ui.full[id] = !ui.full[id]; if (!ui.full[id] && !ui.zoom[id]) ui.zoom[id] = 1; render(true); break;
+      case 'zoomIn': ui.full[id] = false; ui.zoom[id] = Math.min(3, (ui.zoom[id] || 1) + 1); render(true); break;
+      case 'zoomOut': {
+        const cur = ui.full[id] ? 0 : (ui.zoom[id] || 1);
+        if (cur <= 1) { ui.full[id] = true; ui.zoom[id] = 1; } else { ui.full[id] = false; ui.zoom[id] = cur - 1; }
+        render(true); break;
+      }
+      case 'zoomModal': openChartModal(id); break;
       case 'printOpd': printOpd(id); break;
       case 'printCharts': printCharts(id); break;
       case 'printBlank': window.Print.doPrint(window.Print.opdSheet(null, null, [])); break;

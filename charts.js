@@ -18,7 +18,7 @@
   function render(o) {
     const T = THEME[o.mode || 'screen'];
     const W = o.W || 360, H = o.H || 300;
-    const m = { l: o.mode === 'print' ? 40 : 34, r: o.mode === 'print' ? 40 : 36, t: 14, b: 30 };
+    const m = { l: o.mode === 'print' ? 40 : 38, r: o.mode === 'print' ? 42 : 44, t: 16, b: 30 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
     const { x0, x1, y0, y1 } = o;
     const sx = a => m.l + (a - x0) / (x1 - x0) * pw;
@@ -44,9 +44,13 @@
       out.push(`<line x1="${m.l}" x2="${m.l + pw}" y1="${sy(v)}" y2="${sy(v)}" stroke="${major ? T.gridMajor : T.grid}" stroke-width="${major ? 0.8 : 0.4}"/>`);
       if (major) out.push(`<text x="${m.l - 4}" y="${sy(v) + fs * 0.35}" font-size="${fs}" text-anchor="end" fill="${T.text}">${+v.toFixed(1)}</text>`);
     }
-    const xLab = span > 10 ? 1 : span > 4 ? 1 : 0.5;
-    for (let a = Math.ceil(x0 / xLab) * xLab; a <= x1 + 1e-9; a += xLab)
-      out.push(`<text x="${sx(a)}" y="${m.t + ph + fs + 4}" font-size="${fs}" text-anchor="middle" fill="${T.text}">${a % 1 ? a.toFixed(1) : a}</text>`);
+    const xLab = span > 6 ? 1 : span > 2 ? 0.5 : 0.25;
+    for (let a = Math.ceil(x0 / xLab - 1e-9) * xLab; a <= x1 + 1e-9; a += xLab) {
+      const xPos = sx(a);
+      if (xPos < m.l + 6 || xPos > m.l + pw - 6) continue;
+      const lbl = Math.abs(a - Math.round(a)) < 1e-6 ? String(Math.round(a)) : Number(a.toFixed(2)).toString();
+      out.push(`<text x="${xPos}" y="${m.t + ph + fs + 4}" font-size="${fs}" text-anchor="middle" fill="${T.text}">${lbl}</text>`);
+    }
     out.push(`<text x="${m.l + pw / 2}" y="${H - 3}" font-size="${fs}" text-anchor="middle" fill="${T.text}" font-weight="600">Age (years)</text>`);
     const yTitle = { h: 'Height (cm)', w: 'Weight (kg)', b: 'BMI (kg/m²)', hw: 'Height (cm) · Weight (kg)' }[o.measure];
     out.push(`<text transform="translate(${fs + 1},${m.t + ph / 2}) rotate(-90)" font-size="${fs}" text-anchor="middle" fill="${T.text}" font-weight="600">${yTitle}</text>`);
@@ -89,7 +93,7 @@
       const xm = inView ? sx(18) - 6 : m.l + pw - 8;
       out.push(`<line x1="${xm}" x2="${xm}" y1="${sy(o.mph.high)}" y2="${sy(o.mph.low)}" stroke="${T.mph}" stroke-width="5" stroke-linecap="round" opacity=".35"/>`);
       out.push(`<path d="M${xm - 6} ${sy(o.mph.value)} l6 -5 l6 5 l-6 5z" fill="${T.mph}"/>`);
-      if (!inView) out.push(`<text x="${xm - 9}" y="${sy(o.mph.value) + 3}" font-size="${fs}" text-anchor="end" fill="${T.mph}" font-weight="700">MPH ${f1(o.mph.value)} at 18 y →</text>`);
+      if (!inView) out.push(`<text x="${xm - 9}" y="${sy(o.mph.value) + 3}" font-size="${fs}" text-anchor="end" fill="${T.mph}" font-weight="700">MPH ${f1(o.mph.value)} →</text>`);
     }
 
     // ---- patient points ----
@@ -108,29 +112,60 @@
           out.push(`<circle cx="${sx(p.ba)}" cy="${sy(p[k])}" r="${r}" fill="#fff" stroke="${T.ba}" stroke-width="1.6"/>`);
         }
       });
+      if (o.showPointLabels && pts.length) {
+        const pLabs = pts.filter(p => p.age >= x0 && p.age <= x1).map((p, idx, arr) => {
+          const px = sx(p.age), py = sy(p[k]);
+          const anchor = px < m.l + 44 ? 'start' : px > m.l + pw - 44 ? 'end' : 'middle';
+          const dx = anchor === 'start' ? 6 : anchor === 'end' ? -6 : 0;
+          const unit = k === 'h' ? 'cm' : k === 'w' ? 'kg' : '';
+          return { x: px + dx, y: py - 10, anchor, txt: `${f1(p[k])}${unit ? ' ' + unit : ''}`, col, bold: idx === arr.length - 1 };
+        });
+        pLabs.sort((a, b) => a.y - b.y);
+        const pGap = fs + 4;
+        for (let i = 1; i < pLabs.length; i++) if (Math.abs(pLabs[i].x - pLabs[i - 1].x) < 42 && pLabs[i].y - pLabs[i - 1].y < pGap) pLabs[i].y = pLabs[i - 1].y + pGap;
+        for (const pl of pLabs) {
+          const ly = Math.max(m.t + fs + 2, Math.min(m.t + ph - 4, pl.y));
+          out.push(`<text x="${pl.x.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs - 0.5}" text-anchor="${pl.anchor}" fill="${pl.col}" font-weight="${pl.bold ? '800' : '700'}" stroke="${T.bg}" stroke-width="3" paint-order="stroke">${esc(pl.txt)}</text>`);
+        }
+      }
     }
     out.push('</g>');
 
-    // ---- centile labels (de-overlapped) ----
+    // ---- centile labels (de-overlapped vertically, never overflowing horizontally) ----
     labels.sort((a, b) => a.y - b.y);
-    const gap = fs + 1;
+    const gap = fs + 2;
     for (let i = 1; i < labels.length; i++) if (labels[i].y - labels[i - 1].y < gap) labels[i].y = labels[i - 1].y + gap;
-    for (const L of labels) if (L.y > m.t - 4 && L.y < m.t + ph + 6)
-      out.push(`<text x="${m.l + pw + 3}" y="${L.y + fs * 0.35}" font-size="${fs}" fill="${L.c}" ${L.bold ? 'font-weight="800"' : ''}>${esc(L.t)}</text>`);
+    const maxY = m.t + ph - 4;
+    if (labels.length && labels[labels.length - 1].y > maxY) {
+      labels[labels.length - 1].y = maxY;
+      for (let i = labels.length - 2; i >= 0; i--) if (labels[i + 1].y - labels[i].y < gap) labels[i].y = labels[i + 1].y - gap;
+    }
+    for (const L of labels) if (L.y > m.t + 2 && L.y < m.t + ph + 2)
+      out.push(`<text x="${m.l + pw + 4}" y="${L.y + fs * 0.35}" font-size="${fs}" fill="${L.c}" ${L.bold ? 'font-weight="800"' : ''}>${esc(L.t)}</text>`);
     out.push(`<rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" fill="none" stroke="${T.axis}" stroke-width="1"/>`);
     out.push('</svg>');
     return out.join('');
   }
 
-  // Choose the view window. full=true -> standard IAP 0–18 view.
-  function windowFor(measure, sex, points, full, mph) {
+  // Choose the view window. full=true -> standard IAP 0–18 view. zoom: 1 (patient), 2 (tight), 3 (close-up).
+  function windowFor(measure, sex, points, full, mph, zoom) {
     const minA = G().minAge(measure === 'hw' ? 'h' : measure);
     let x0 = minA, x1 = 18;
+    const zLvl = zoom || 1;
     const ages = (points || []).map(p => p.age).filter(a => a != null);
     if (!full && ages.length) {
-      x0 = Math.max(minA, Math.floor(Math.min(...ages) - 1));
-      x1 = Math.min(18, Math.ceil(Math.max(...ages) + 2));
-      if (x1 - x0 < 4) { const extra = 4 - (x1 - x0); x0 = Math.max(minA, x0 - Math.ceil(extra / 2)); x1 = Math.min(18, x0 + 4); }
+      if (zLvl >= 2) {
+        const lastAge = ages[ages.length - 1];
+        const half = zLvl >= 3 ? 0.6 : 1.25;
+        x0 = Math.max(minA, Math.floor((lastAge - half) * 4) / 4);
+        x1 = Math.min(18, Math.ceil((lastAge + half) * 4) / 4);
+        const minSpan = zLvl >= 3 ? 1 : 2;
+        if (x1 - x0 < minSpan) { x0 = Math.max(minA, x0 - (minSpan - (x1 - x0)) / 2); x1 = Math.min(18, x0 + minSpan); }
+      } else {
+        x0 = Math.max(minA, Math.floor(Math.min(...ages) - 1));
+        x1 = Math.min(18, Math.ceil(Math.max(...ages) + 2));
+        if (x1 - x0 < 4) { const extra = 4 - (x1 - x0); x0 = Math.max(minA, x0 - Math.ceil(extra / 2)); x1 = Math.min(18, x0 + 4); }
+      }
     }
     const meas = measure === 'hw' ? ['h', 'w'] : [measure];
     let lo = Infinity, hi = -Infinity;
