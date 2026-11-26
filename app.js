@@ -458,7 +458,7 @@
     const f = e.target, err = document.getElementById('loginErr');
     err.textContent = '';
     try { await S.signIn(f.email.value.trim(), f.password.value); go('/'); render(); }
-    catch (x) { err.textContent = /invalid/i.test(x.message) ? 'Email or password is not correct.' : x.message; }
+    catch (x) { err.textContent = x.message === 'Invalid login credentials' ? 'Email or password is not correct.' : x.message; }
   });
 
   // ---------- boot ----------
