@@ -188,7 +188,7 @@
   function viewPatients() {
     const { all, list, q } = filteredPatients();
     const shown = q ? list : list.slice(0, 100);
-    return `<div class="top"><span style="width:56px"></span><div class="ttl">Patients</div><button class="iconbtn" data-act="newPatient" aria-label="New patient">+</button></div>
+    return `<div class="top"><span style="width:56px"></span><div class="ttl">Patients</div><span style="width:56px"></span></div>
       ${updateBanner()}
       <div class="search" style="margin-top:8px">${I.search}<input id="q" type="search" placeholder="Search name, phone or ID" value="${esc(ui.q)}" autocomplete="off"></div>
       <button class="cta" data-act="newPatient"><span class="plus">+</span>New patient</button>
