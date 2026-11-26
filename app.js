@@ -73,7 +73,7 @@
   // ======================================================
   function viewLogin() {
     return `<div class="login">
-      <img class="logo" src="logo.png" alt="Peds Endo Clinic">
+      <img class="logo" src="logo.png?v=6" alt="Peds Endo Clinic">
       <h1>${esc((CFG.clinic || {}).doctorName || 'Dr. Vijay Shripad Dhawle')}</h1>
       <p class="sub">Pediatric Endocrinology · Latur</p>
       <form class="form" id="loginForm" autocomplete="on">
@@ -95,7 +95,7 @@
     const nToday = [...S.state.visits.values()].filter(v => !v.deleted && v.date === t).length;
     const d = new Date();
     const dateLabel = d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
-    return `<div class="top"><img class="logo" src="logo.png" alt="Peds Endo Clinic"><button class="iconbtn" data-act="settings" aria-label="Settings">${I.gear}</button></div>
+    return `<div class="top"><img class="logo" src="logo.png?v=6" alt="Peds Endo Clinic"><button class="iconbtn" data-act="settings" aria-label="Settings">${I.gear}</button></div>
       <section class="hello">
         <div class="date">${dateLabel} · ${esc((CFG.clinic || {}).greetingName || 'Dr. Dhawle')}</div>
         <h1>Today’s clinic</h1>

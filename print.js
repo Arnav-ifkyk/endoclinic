@@ -11,7 +11,7 @@
   function letterhead(small) {
     const c = C();
     return `<header class="lh${small ? ' lh-small' : ''}">
-      <img class="lh-logo" src="logo.png" alt="Peds Endo Clinic">
+      <img class="lh-logo" src="logo.png?v=6" alt="Peds Endo Clinic">
       <div class="lh-doc"><div class="lh-name">${esc(c.doctorName)}</div>
         ${(c.qualifications || []).map(q => `<div>${esc(q)}</div>`).join('')}
         <div>Regd. No. : ${esc(c.regdNo)}</div></div>
