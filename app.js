@@ -375,7 +375,7 @@
       ${vs.length ? `<div class="card"><ul class="vlist">${vs.slice().reverse().map(v => {
         const r = G.analyse(p, v); const [y, m, d] = v.date.split('-');
         return `<li class="vrow" data-act="editVisit" data-id="${id}" data-v="${v.id}"><div class="d">${+d} ${MON[+m - 1]}<small>${y}</small></div>
-          <div class="m"><b>${n1(r.height)}</b> cm · <b>${n1(r.weight)}</b> kg · BMI <b>${n1(r.bmi)}</b><span class="sub">${r.ageText} · Ht SDS ${sd(r.hSds)}</span></div><div style="color:var(--ink2);font-size:20px;font-weight:600">›</div></li>`;
+          <div class="m"><div class="metrics"><span><b>${n1(r.height)}</b> cm</span><span><b>${n1(r.weight)}</b> kg</span><span>BMI <b>${n1(r.bmi)}</b></span></div><div class="sub"><span>${r.ageText}</span><span>Ht SDS ${sd(r.hSds)}</span></div></div><div style="color:var(--ink2);font-size:20px;font-weight:600">›</div></li>`;
       }).join('')}</ul></div>` : ''}
       ${syncPill()}`;
   }
