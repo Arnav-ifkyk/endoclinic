@@ -1,6 +1,6 @@
 // sw.js — makes the app open instantly and work offline.
 // Bump VERSION whenever you upload new app files.
-const VERSION = 'endo-v1';
+const VERSION = 'endo-v2';
 const SHELL = ['./', 'index.html', 'config.js', 'refdata.js', 'growth.js', 'charts.js', 'print.js', 'store.js', 'app.js', 'logo.png', 'fraunces-latin-full-normal.woff2', 'fraunces-latin-full-italic.woff2', 'manrope-latin-wght-normal.woff2', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
