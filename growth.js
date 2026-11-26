@@ -3,6 +3,7 @@
 // centile tables, BMI from LMS fitted to the published BMI table).
 (function (global) {
   'use strict';
+  if (typeof REF !== 'undefined' && !global.REF) global.REF = REF;
   const IAP_P = [3, 10, 25, 50, 75, 90, 97];
 
   // ---------- normal distribution ----------
