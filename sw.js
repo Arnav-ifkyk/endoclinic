@@ -1,7 +1,7 @@
 // sw.js — makes the app open instantly and work offline.
 // Bump VERSION whenever you upload new app files.
-const VERSION = 'endo-v16';
-const SHELL = ['./', 'index.html', 'app.html', 'config.js', 'refdata.js', 'growth.js', 'charts.js', 'print.js', 'store.js', 'helpers.js', 'app.js', 'logo.png', 'logo.png?v=6', 'fraunces-latin-full-normal.woff2', 'fraunces-latin-full-italic.woff2', 'manrope-latin-wght-normal.woff2', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
+const VERSION = 'endo-v17';
+const SHELL = ['./', 'index.html', 'app.html', 'config.js', 'refdata.js', 'growth.js', 'charts.js', 'print.js', 'store.js', 'helpers.js', 'app.js', 'logo.png', 'logo.png?v=6', 'assets/logo.png', 'assets/fonts/newsreader-latin-opsz-normal.woff2', 'assets/fonts/newsreader-latin-opsz-italic.woff2', 'assets/fonts/instrument-sans-latin-wght-normal.woff2', 'icon-192.png', 'icon-512.png', 'manifest.webmanifest'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: 'reload' }))))); });
 self.addEventListener('message', e => { if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

@@ -6,8 +6,8 @@
   const f1 = v => (Math.round(v * 10) / 10).toFixed(1);
 
   const THEME = {
-    screen: { grid: '#ECEAF4', gridMajor: '#D9D5E8', axis: '#4A4366', cent: '#6E6796', median: '#1C1A52', text: '#564E73',
-      sdRed: '#8C2611', h: '#8C2611', w: '#1B6B6E', ba: '#1B1A54', mph: '#D6A516', ov: '#D6A516', ob: '#8C2611', bg: '#FFFFFF' },
+    screen: { grid: '#ede7d6', gridMajor: '#dbd2b8', axis: '#664a42', cent: '#7d6a60', median: '#0f2a10', text: '#664a42',
+      sdRed: '#8C2611', h: '#8C2611', w: '#1B6B6E', ba: '#1C1A52', mph: '#3f6b2b', ov: '#D6A516', ob: '#8C2611', bg: '#fdfbf4' },
     print: { grid: '#e8dff2', gridMajor: '#c7b6dd', axis: '#2b1b3d', cent: '#6a568f', median: '#2b1b3d', text: '#3b2a57',
       sdRed: '#c81e1e', h: '#c2410c', w: '#0f6b66', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
   };
