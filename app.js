@@ -356,7 +356,7 @@
         ${tile('Height velocity', hv ? n1(hv.cmPerYear) : '—', hv ? 'cm/yr' : '', hv ? `<span class="c">Over ${n1(hv.overYears * 12).replace('.0', '')} months</span>` : '<span class="c">Needs 2 visits ≥4 months apart</span>', '', 'hv')}
         ${mph ? `<div class="tile" data-accent="mph" style="grid-column:1/-1"><div class="k">Mid-parental height${corrNote ? ` <span class="c">${esc(corrNote)}</span>` : ''}</div>
           <div class="v">${n1(mph.value)} <small>cm · SDS ${sd(mph.sds)} · ${G.centileText(mph.sds)}</small></div>
-          <div class="s">${diff != null ? `Ht SDS − MPH SDS = ${sd(diff)}` : ''} <span class="c">· F ${n1(+p.fatherHt)} · M ${n1(+p.motherHt)}</span></div></div>` : ''}
+          <div class="s" style="display:flex;flex-wrap:wrap;gap:6px 16px">${diff != null ? `<span>Height SDS − MPH SDS = <b>${sd(diff)}</b></span>` : ''}<span class="c">Father ${n1(+p.fatherHt)} cm · Mother ${n1(+p.motherHt)} cm</span></div></div>` : ''}
       </div>` : `<div class="empty"><div class="big">No visits yet</div>Add the first visit to see SDS and charts</div>`}
 
       <div class="sec-title">Growth chart<small>IAP 2015 · WHO 2006</small></div>
@@ -376,7 +376,7 @@
       ${vs.length ? `<div class="card"><ul class="vlist">${vs.slice().reverse().map(v => {
         const r = G.analyse(p, v); const [y, m, d] = v.date.split('-');
         return `<li class="vrow" data-act="editVisit" data-id="${id}" data-v="${v.id}"><div class="d">${+d} ${MON[+m - 1]}<small>${y}</small></div>
-          <div class="m"><div class="metrics"><span><b>${n1(r.height)}</b> cm</span><span><b>${n1(r.weight)}</b> kg</span><span>BMI <b>${n1(r.bmi)}</b></span></div><div class="sub"><span>${r.ageText}</span><span>Ht SDS ${sd(r.hSds)}</span></div></div><div style="color:var(--ink2);font-size:20px;font-weight:600">›</div></li>`;
+          <div class="m"><div class="metrics"><span><b>${n1(r.height)}</b> cm</span><span><b>${n1(r.weight)}</b> kg</span><span>BMI <b>${n1(r.bmi)}</b></span></div><div class="sub"><span>${r.ageText}</span><span>Height SDS ${sd(r.hSds)}</span></div></div><div style="color:var(--ink2);font-size:20px;font-weight:600">›</div></li>`;
       }).join('')}</ul></div>` : ''}
       ${syncPill()}`;
   }
