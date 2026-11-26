@@ -12,17 +12,17 @@
   const initials = n => (n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 
   const I = {
-    back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
-    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68 1.65 1.65 0 0 0 10 3.17V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.26.6.85 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.66 0-1.25.4-1.51 1z"/></svg>',
-    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
-    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
-    print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
-    chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg>',
-    down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>',
-    up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M5 3h14"/></svg>',
-    out: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
-    sheet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg>',
-    sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>',
+    back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68 1.65 1.65 0 0 0 10 3.17V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.26.6.85 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.66 0-1.25.4-1.51 1z"/></svg>',
+    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+    print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
+    chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg>',
+    down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>',
+    up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M5 3h14"/></svg>',
+    out: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
+    sheet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg>',
+    sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></svg>',
   };
 
   // ---------- ui state ----------
@@ -47,7 +47,7 @@
     const st = S.state;
     if (!S.cloudConfigured) return `<div class="syncpill"><span class="dot off"></span>Demo mode · saved on this phone only</div>`;
     if (!navigator.onLine) return `<div class="syncpill"><span class="dot wait"></span>Offline · ${st.pending} waiting to upload</div>`;
-    if (st.error) return `<div class="syncpill" data-act="sync"><span class="dot bad"></span>Could not sync · tap to retry</div>`;
+    if (st.error) return `<div class="syncpill" data-act="sync"><span class="dot bad"></span>Could not sync (${esc(st.error)}) · tap to retry</div>`;
     if (st.syncing || st.pending) return `<div class="syncpill"><span class="dot wait"></span>Saving online…</div>`;
     return `<div class="syncpill"><span class="dot"></span>All records safely saved online</div>`;
   }
@@ -74,14 +74,15 @@
   function viewLogin() {
     return `<div class="login">
       <img class="logo" src="logo.png" alt="Peds Endo Clinic">
-      <h1>Welcome, <em>doctor</em></h1>
+      <h1>${esc((CFG.clinic || {}).doctorName || 'Dr. Vijay Shripad Dhawle')}</h1>
+      <p class="sub">Pediatric Endocrinology · Latur</p>
       <form class="form" id="loginForm" autocomplete="on">
         <div class="field"><label>Email</label><input name="email" type="email" autocomplete="username" required></div>
         <div class="field"><label>Password</label><input name="password" type="password" autocomplete="current-password" required></div>
         <div class="err" id="loginErr"></div>
         <button class="cta" type="submit">Sign in</button>
       </form>
-      <p class="fineprint" style="text-align:center">You stay signed in on this phone after the first time.</p>
+      <p class="fineprint" style="text-align:center">You stay signed in on this phone after the first time</p>
     </div>`;
   }
 
@@ -93,11 +94,11 @@
     const t = today();
     const nToday = [...S.state.visits.values()].filter(v => !v.deleted && v.date === t).length;
     const d = new Date();
-    const greet = d.getHours() < 12 ? 'Good morning' : d.getHours() < 17 ? 'Good afternoon' : 'Good evening';
+    const dateLabel = d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
     return `<div class="top"><img class="logo" src="logo.png" alt="Peds Endo Clinic"><button class="iconbtn" data-act="settings" aria-label="Settings">${I.gear}</button></div>
       <section class="hello">
-        <div class="date">${d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
-        <h1>${greet},<br><em>${esc((CFG.clinic || {}).greetingName || 'Doctor')}</em></h1>
+        <div class="date">${dateLabel} · ${esc((CFG.clinic || {}).greetingName || 'Dr. Dhawle')}</div>
+        <h1>Today’s clinic</h1>
         <div class="stats">${all.length} patient${all.length === 1 ? '' : 's'} · ${nToday} visit${nToday === 1 ? '' : 's'} today</div>
         ${S.cloudConfigured ? '' : '<div class="demo">Demo mode: records are kept on this phone only. Connect Supabase in config.js before using with patients.</div>'}
       </section>
@@ -109,13 +110,13 @@
         const age = G.ageText(G.ageYears(p.dob, today()));
         const chip = a && a.hSds != null ? `<span class="chip ${a.hSds < -2 ? 'warn' : ''}">Ht ${sd(a.hSds)}</span>` : '';
         return `<li class="pcard" data-act="open" data-id="${p.id}"><div class="pebble ${p.sex}"><span>${esc(initials(p.name))}</span></div>
-          <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${age} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · ${lv ? 'last seen ' + nice(lv.date) : 'no visits yet'}</div></div>${chip}</li>`;
-      }).join('')}</ul>` : `<div class="empty"><div class="big">${q ? 'No match' : 'No patients yet'}</div>${q ? 'Try part of the name or the phone number.' : 'Tap “New patient” to add the first one.'}</div>`}
+          <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${age} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · ${lv ? 'Last seen ' + nice(lv.date) : 'No visits yet'}</div></div>${chip}</li>`;
+      }).join('')}</ul>` : `<div class="empty"><div class="big">${q ? 'No match' : 'No patients yet'}</div>${q ? 'Try part of the name or phone number' : 'Tap “New patient” to add the first record'}</div>`}
       ${syncPill()}`;
   }
 
-  function tile(k, v, unit, s, cls = '', bar = '') {
-    return `<div class="tile ${cls}">${bar ? `<span class="bar" style="background:${bar}"></span>` : ''}<div class="k">${k}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
+  function tile(k, v, unit, s, cls = '') {
+    return `<div class="tile ${cls}"><span class="bar"></span><div class="k">${k}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div>${s ? `<div class="s">${s}</div>` : ''}</div>`;
   }
 
   function viewPatient(id) {
@@ -137,27 +138,27 @@
     const diff = a && a.hSds != null && mph ? a.hSds - mph.sds : null;
     return `<div class="top"><button class="iconbtn" data-act="home" aria-label="Back">${I.back}</button><div class="ttl"></div><button class="iconbtn" data-act="editPatient" data-id="${id}" aria-label="Edit patient">${I.edit}</button></div>
       <div class="hero"><div class="nm">${esc(p.name)}</div>
-        <div class="meta">${ageNow} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · born ${nice(p.dob)}${p.phone ? ' · ' + esc(p.phone) : ''}</div>
-        <div class="chips"><span class="chip">${esc(p.code || '')}</span>${mph ? `<span class="chip gold">MPH ${n1(mph.value)} cm</span><span class="chip">Target ${n1(mph.low)}–${n1(mph.high)}</span>` : '<span class="chip">Parents’ heights not entered</span>'}</div></div>
-      <div style="margin-top:14px"><button class="cta gold" data-act="newVisit" data-id="${id}"><span class="plus">+</span>Add today’s visit</button></div>
+        <div class="meta">${ageNow} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · Born ${nice(p.dob)}${p.phone ? ' · ' + esc(p.phone) : ''}</div>
+        <div class="chips">${p.code ? `<span class="chip">${esc(p.code)}</span>` : ''}${mph ? `<span class="chip gold">MPH ${n1(mph.value)} cm</span><span class="chip">Target ${n1(mph.low)}–${n1(mph.high)}</span>` : '<span class="chip">Parents’ heights not entered</span>'}</div></div>
+      <div style="margin-top:12px"><button class="cta gold" data-act="newVisit" data-id="${id}"><span class="plus">+</span>Add today’s visit</button></div>
       <div class="btnrow"><button class="btn" data-act="printOpd" data-id="${id}">${I.print}OPD sheet</button><button class="btn" data-act="printCharts" data-id="${id}" ${vs.length ? '' : 'disabled style="opacity:.5"'}>${I.chart}Growth charts</button></div>
 
       <div class="sec-title">Latest visit<small>${lv ? nice(lv.date) + ' · ' + a.ageText : ''}</small></div>
       ${lv ? `<div class="tiles">
-        ${tile('Height', n1(a.height), 'cm', zsc(a.hSds), a.hSds != null && a.hSds < -2 ? 'alert' : '', '#d4572e')}
-        ${tile('Weight', n1(a.weight), 'kg', zsc(a.wSds), '', '#1f7a74')}
-        ${tile('BMI', n1(a.bmi), '', a.bSds != null ? `SDS ${sd(a.bSds)}${a.bmiCat ? ` <span class="c">· ${a.bmiCat}</span>` : ''}` : (a.age < 2 ? '<span class="c">from 2 years</span>' : ''), a.bmiCat === 'Overweight' || a.bmiCat === 'Obese' ? 'alert' : '', '#7b68a0')}
-        ${tile('Height velocity', hv ? n1(hv.cmPerYear) : '—', hv ? 'cm/yr' : '', hv ? `<span class="c">over ${n1(hv.overYears * 12).replace('.0', '')} months</span>` : '<span class="c">needs 2 visits ≥4 months apart</span>', '', '#2f3c9e')}
-        ${mph ? `<div class="tile" style="grid-column:1/-1"><span class="bar" style="background:#c48a12"></span><div class="k">Mid-parental height</div>
+        ${tile('Height', n1(a.height), 'cm', zsc(a.hSds), a.hSds != null && a.hSds < -2 ? 'alert' : '')}
+        ${tile('Weight', n1(a.weight), 'kg', zsc(a.wSds), '')}
+        ${tile('BMI', n1(a.bmi), '', a.bSds != null ? `SDS ${sd(a.bSds)}${a.bmiCat ? ` <span class="c">· ${a.bmiCat}</span>` : ''}` : (a.age < 2 ? '<span class="c">From 2 years</span>' : ''), a.bmiCat === 'Overweight' || a.bmiCat === 'Obese' ? 'alert' : '')}
+        ${tile('Height velocity', hv ? n1(hv.cmPerYear) : '—', hv ? 'cm/yr' : '', hv ? `<span class="c">Over ${n1(hv.overYears * 12).replace('.0', '')} months</span>` : '<span class="c">Needs 2 visits ≥4 months apart</span>', '')}
+        ${mph ? `<div class="tile" style="grid-column:1/-1"><div class="k">Mid-parental height</div>
           <div class="v">${n1(mph.value)} <small>cm · SDS ${sd(mph.sds)} · ${G.centileText(mph.sds)}</small></div>
           <div class="s">${diff != null ? `Ht SDS − MPH SDS = ${sd(diff)}` : ''} <span class="c">· F ${n1(+p.fatherHt)} · M ${n1(+p.motherHt)}</span></div></div>` : ''}
-      </div>` : `<div class="empty"><div class="big">No visits yet</div>Add the first visit to see SDS and charts.</div>`}
+      </div>` : `<div class="empty"><div class="big">No visits yet</div>Add the first visit to see SDS and charts</div>`}
 
       <div class="sec-title">Growth chart<small>IAP 2015 · WHO 2006</small></div>
       <div class="card">
         <div class="seg">${[['h', 'Height'], ['w', 'Weight'], ['b', 'BMI']].map(([k, l]) => `<button class="${tab === k ? 'on' : ''}" data-act="tab" data-id="${id}" data-k="${k}">${l}</button>`).join('')}</div>
         <div class="chartbox">${chart}</div>
-        <div class="charttools"><div class="legend"><span><i style="background:${tab === 'w' ? '#1f7a74' : '#d4572e'}"></i>${esc(p.name.split(' ')[0])}</span>${tab === 'h' && mph ? '<span><i style="background:#c48a12;border-radius:2px;transform:rotate(45deg)"></i>MPH</span>' : ''}${tab === 'h' && vs.some(v => v.boneAge) ? '<span><i style="border:2px solid #2f3c9e;background:#fff"></i>Bone age</span>' : ''}${tab === 'b' ? '<span><i style="background:#e88a1a"></i>23</span><span><i style="background:#d1342f"></i>27</span>' : ''}</div>
+        <div class="charttools"><div class="legend"><span><i style="background:${tab === 'w' ? '#1f7a74' : '#c94b24'}"></i>${esc(p.name.split(' ')[0])}</span>${tab === 'h' && mph ? '<span><i style="background:#b07a0e;border-radius:2px;transform:rotate(45deg)"></i>MPH</span>' : ''}${tab === 'h' && vs.some(v => v.boneAge) ? '<span><i style="border:2px solid #2f3c9e;background:#fff"></i>Bone age</span>' : ''}${tab === 'b' ? '<span><i style="background:#e88a1a"></i>23</span><span><i style="background:#d1342f"></i>27</span>' : ''}</div>
           <button class="link" data-act="zoom" data-id="${id}">${full ? 'Zoom to patient' : 'Show 0–18 years'}</button></div>
       </div>
 

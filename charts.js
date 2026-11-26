@@ -6,8 +6,8 @@
   const f1 = v => (Math.round(v * 10) / 10).toFixed(1);
 
   const THEME = {
-    screen: { grid: '#ece5f5', gridMajor: '#d9cdea', axis: '#4a3a63', cent: '#7b68a0', median: '#3b2a57', text: '#6d5f84',
-      h: '#d4572e', w: '#1f7a74', ba: '#2f3c9e', mph: '#c48a12', ov: '#e88a1a', ob: '#d1342f', bg: '#fffdfb' },
+    screen: { grid: '#ece7df', gridMajor: '#d7cfc3', axis: '#594c6b', cent: '#847896', median: '#2b1b3d', text: '#594c6b',
+      h: '#c94b24', w: '#1f7a74', ba: '#2f3c9e', mph: '#b07a0e', ov: '#e88a1a', ob: '#d1342f', bg: '#fffdfb' },
     print: { grid: '#e8dff2', gridMajor: '#c7b6dd', axis: '#2b1b3d', cent: '#6a568f', median: '#2b1b3d', text: '#3b2a57',
       h: '#c2410c', w: '#0f6b66', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
   };
@@ -25,7 +25,7 @@
     const sy = v => m.t + (1 - (v - y0) / (y1 - y0)) * ph;
     const fs = o.mode === 'print' ? 8 : 10;
     const out = [];
-    out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="gchart" role="img" font-family="Manrope, sans-serif">`);
+    out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="gchart" role="img" font-family="Manrope, sans-serif" style="font-variant-numeric:tabular-nums">`);
     out.push(`<defs><clipPath id="clip-${o.id || 'c'}"><rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}"/></clipPath></defs>`);
     out.push(`<rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" fill="${T.bg}"/>`);
 
