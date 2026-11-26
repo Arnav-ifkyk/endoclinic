@@ -509,18 +509,22 @@ if(reduce||!window.gsap){
   gsap.registerPlugin(ScrollTrigger);
   if(window.Lenis){lenis=new Lenis({lerp:.09,smoothWheel:true});lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
     document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id.length>1&&document.querySelector(id)&&!a.dataset.open){e.preventDefault();lenis.scrollTo(id,{offset:-80})}}))}
-  document.querySelectorAll('path.draw').forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.style.opacity=0;
-    gsap.to(p,{strokeDashoffset:0,opacity:1,ease:'none',scrollTrigger:{trigger:p.closest('svg'),start:'top 85%',end:'bottom 45%',scrub:.6}})});
-  gsap.fromTo(stackCards,{rotate:0,xPercent:0,yPercent:0},{rotate:i=>FAN[i].r,xPercent:i=>FAN[i].x,yPercent:i=>FAN[i].y,ease:'power2.out',
-    scrollTrigger:{trigger:'#stack',start:'top 80%',end:'center 45%',scrub:.8}});
-  document.querySelectorAll('.panel').forEach((p,i,all)=>{if(i===all.length-1)return;
-    gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true}})});
   gsap.to('#heroArt',{yPercent:12,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
   const cards=$('cards'),dist=()=>Math.max(0,cards.scrollWidth-cards.clientWidth);
   if(dist()>0){
     cards.style.scrollSnapType='none';
     gsap.to(cards,{scrollLeft:dist,ease:'none',scrollTrigger:{trigger:'#treat',start:'top 76px',end:()=>'+='+Math.max(dist(),360),pin:true,scrub:.35,invalidateOnRefresh:true,anticipatePin:1}});
   }
+  document.querySelectorAll('path.draw').forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.style.opacity=1;
+    gsap.to(p,{strokeDashoffset:0,ease:'none',scrollTrigger:{trigger:p.closest('svg'),start:'top 88%',end:'center 45%',scrub:.6,invalidateOnRefresh:true}})});
+  gsap.fromTo(stackCards,{rotate:0,xPercent:0,yPercent:0},{rotate:i=>FAN[i].r,xPercent:i=>FAN[i].x,yPercent:i=>FAN[i].y,ease:'power2.out',
+    scrollTrigger:{trigger:'#stack',start:'top 80%',end:'center 45%',scrub:.8,invalidateOnRefresh:true}});
+  document.querySelectorAll('.panel').forEach((p,i,all)=>{if(i===all.length-1)return;
+    gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true,invalidateOnRefresh:true}})});
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
+  window.addEventListener('load',()=>ScrollTrigger.refresh(),{once:true});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>ScrollTrigger.refresh());
 }
 }
 </script>
