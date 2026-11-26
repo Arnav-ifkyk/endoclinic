@@ -1,311 +1,520 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#120E1C">
 <title>Peds Endo Clinic, Latur</title>
-<meta name="description" content="Peds Endo Clinic, Latur: care for children's growth, puberty, thyroid, diabetes, adrenal and bone problems by Dr. Vijay Shripad Dhawle, Fellow in Pediatric Endocrinology.">
-<link rel="icon" href="logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="description" content="Peds Endo Clinic, Latur. Care for children's growth, puberty, thyroid, diabetes, adrenal and bone problems by Dr. Vijay Shripad Dhawle, Fellow in Pediatric Endocrinology.">
+<meta property="og:title" content="Peds Endo Clinic, Latur">
+<meta property="og:description" content="Hormone and growth care for children in Latur.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preload" href="assets/fonts/newsreader-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"MedicalClinic","name":"Peds Endo Clinic","medicalSpecialty":"Pediatric endocrinology","address":{"@type":"PostalAddress","streetAddress":"Latur Diabetes Centre, 1st Floor, Ashok Hotel","addressLocality":"Latur","addressRegion":"Maharashtra","postalCode":"413512","addressCountry":"IN"},"telephone":["+919850631399","+912382250213","+912382255224"],"employee":{"@type":"Physician","name":"Dr. Vijay Shripad Dhawle"}}</script>
 <style>
-/* VOICE: warm, calm, clinical; a parent should feel the problem is understood.
-   IDEA: the clinic's logo is a ring of eight pebbles, one per gland; the page turns that ring like a dial as you scroll.
-   PICTURE: a large SVG pebble wheel; the active gland swings to face its story.
-   COLOUR and TYPE: cool white ground, the pebble jewel tones as light; Fraunces titles, Manrope text.
-   LAYOUT: hero arc + headline, sticky wheel beside eight chapters, then checklist, doctor, visit. */
-:root{color-scheme:dark;
-  --bg:#120E1C;--card:rgba(255,255,255,.06);--card-solid:#1B1628;--ink:#F3F1FA;--mute:#A9A3C0;
-  --line:rgba(255,255,255,.10);--glow:.42;
-  --navy:#1C1A52;--green:#1D4A23;--gold:#D6A516;--amber:#8E4612;--teal:#1B6B6E;--rust:#8C2611;--indigo:#1B1A54;--plum:#4B1939}
-*{box-sizing:border-box;min-width:0}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Manrope,system-ui,sans-serif;overflow-x:clip}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.08;text-wrap:balance;margin:0}
+/* VOICE: warm, unhurried, reassuring; written for parents.
+   IDEA: a family album of a child growing up, joined by hand-drawn arrows, after huts.com's rhythm.
+   PICTURE: full-bleed photo slots (illustrated until photos arrive), pebble line art in forest and lime.
+   COLOUR and TYPE: warm off-white, forest-green ink, brown-grey text, one lime accent; Newsreader + Instrument Sans.
+   LAYOUT: hero, card carousel, arrow-linked story sections, stacking panels, doctor, lime band, dark footer. */
+@font-face{font-family:Newsreader;src:url(assets/fonts/newsreader-latin-opsz-normal.woff2) format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+@font-face{font-family:Newsreader;src:url(assets/fonts/newsreader-latin-opsz-italic.woff2) format("woff2");font-weight:200 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Instrument Sans";src:url(assets/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+:root{color-scheme:light;
+  --bg:#faf7ed;--card:#fdfbf4;--ink:#0f2a10;--text:#5e463e;--mute:#7d6a60;--line:#e7e0cb;
+  --lime:#d4e69a;--lime2:#c3da7a;--moss:#3f6b2b;--forest:#0f2a10;
+  --navy:#1c1a52;--green:#1d4a23;--gold:#d6a516;--amber:#8e4612;--teal:#1b6b6e;--rust:#8c2611;--indigo:#232170;--plum:#4b1939;
+  --serif:Newsreader,"Iowan Old Style",Georgia,serif;--sans:"Instrument Sans",system-ui,sans-serif;
+  --pad:max(5vw,20px);--r:20px}
+*{box-sizing:border-box;min-width:0;margin:0}
+html{scroll-padding-top:90px}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}.lenis.lenis-stopped{overflow:clip}
+body{background:var(--bg);color:var(--text);font:400 clamp(16px,.2vw + 15.2px,17px)/1.6 var(--sans);overflow-x:clip;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:400;color:var(--ink);line-height:1.06;letter-spacing:-.015em;text-wrap:balance;font-optical-sizing:auto}
+h2{font-size:clamp(32px,4.2vw,52px)}
+h3{font-size:clamp(24px,2.4vw,30px)}
+p{max-width:36em}
 a{color:inherit}
-.wrap{max-width:1240px;margin:0 auto;padding:0 max(5vw,18px)}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 24px;border-radius:999px;font-weight:800;text-decoration:none;font-size:16px;border:0;cursor:pointer}
-.btn.dark{background:linear-gradient(135deg,var(--navy),#3a1d52);color:#fff;box-shadow:0 12px 28px -12px rgba(28,26,82,.7),inset 0 1px 0 rgba(255,255,255,.15)}
-.btn.gold{background:linear-gradient(135deg,#ecc246,#d6a516 55%,#b9860f);color:#1a1630;box-shadow:0 12px 26px -14px rgba(185,134,15,.9)}
-.btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
-.btn svg{width:20px;height:20px}
-/* nav */
-nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
-nav .wrap{display:flex;align-items:center;gap:18px;height:68px}
-nav img{height:44px;width:auto;background:rgba(255,255,255,.92);padding:4px 8px;border-radius:10px}
-nav .links{display:flex;gap:22px;margin-left:auto;font-weight:700;font-size:15px}
-nav .links a{text-decoration:none;color:var(--mute)}nav .links a:hover{color:var(--ink)}
-nav .btn{min-height:44px;padding:0 18px;font-size:15px}
+img{display:block;max-width:100%}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;z-index:100}.skip:focus{top:12px}
+:focus-visible{outline:2.5px solid var(--moss);outline-offset:3px;border-radius:6px}
+
+/* buttons: pill + separate circle arrow */
+.cta{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font:600 15px/1 var(--sans);color:var(--ink);cursor:pointer;background:none;border:0;padding:0}
+.cta .pill{display:inline-flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;background:var(--lime);transition:background .25s}
+.cta .arr{width:46px;height:46px;border-radius:50%;background:var(--lime);display:grid;place-items:center;transition:transform .25s,background .25s}
+.cta .arr svg{width:18px;height:18px}
+.cta:hover .pill,.cta:hover .arr{background:var(--lime2)}.cta:hover .arr{transform:translateX(4px)}
+.cta.line .pill,.cta.line .arr{background:transparent;border:1.3px solid var(--ink)}
+.cta.line:hover .pill,.cta.line:hover .arr{background:var(--ink);color:var(--bg)}
+
+/* header */
+header.top{position:fixed;inset:0 0 auto;z-index:50;transition:background .35s,color .35s,box-shadow .35s;color:#fff}
+header.top.solid{background:color-mix(in srgb,var(--bg) 94%,transparent);color:var(--ink);box-shadow:0 1px 0 var(--line);backdrop-filter:blur(8px)}
+header.top .wrap{height:80px;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand .tile{width:50px;height:50px;border-radius:14px;background:#fff;display:grid;place-items:center;box-shadow:0 2px 10px rgba(15,42,16,.12)}
+.brand .tile img{width:42px}
+.brand b{font:500 21px/1 var(--serif);letter-spacing:-.01em}
+.brand small{display:block;font:500 12px/1.3 var(--sans);opacity:.8;margin-top:3px}
+nav.links{margin-left:auto;display:flex;gap:26px;font:500 14.5px var(--sans)}
+nav.links a{text-decoration:none;opacity:.9}nav.links a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
+.menu{display:none;margin-left:auto;width:46px;height:46px;border-radius:50%;border:1.3px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+.menu span{display:block;width:18px;height:1.6px;background:currentColor;margin:4px auto}
+.sheet{position:fixed;inset:0;z-index:60;background:var(--forest);color:var(--bg);padding:24px var(--pad);display:flex;flex-direction:column;gap:8px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.7,0,.2,1)}
+.sheet.open{transform:none}
+.sheet .x{align-self:flex-end;width:46px;height:46px;border-radius:50%;border:1.3px solid currentColor;background:none;color:inherit;font-size:22px;cursor:pointer}
+.sheet a{font:400 clamp(34px,9vw,52px)/1.25 var(--serif);text-decoration:none;color:var(--bg)}
+.sheet .cta{margin-top:24px}
+
+/* photo slots: show the photo if it exists, otherwise the illustrated panel */
+.slot{position:relative;overflow:hidden;background:var(--fb,var(--forest))}
+.slot>.art{position:absolute;inset:0;width:100%;height:100%}
+.slot>img.ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s}
+.slot.has-img>img.ph{opacity:1}.slot.has-img>.art{display:none}
+.slot .tag{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.9);color:var(--ink);font:600 12px var(--sans);padding:6px 10px;border-radius:999px;display:none;z-index:2}
+:root.show-slots .slot:not(.has-img) .tag{display:block}
+
 /* hero */
-.hero{position:relative;overflow:hidden;padding:clamp(36px,6vw,80px) 0 clamp(40px,6vw,90px)}
-.aurora{position:absolute;inset:-20% -10% auto;height:130%;pointer-events:none;z-index:0}
-.aurora i{position:absolute;border-radius:50%;filter:blur(70px);opacity:var(--glow);animation:drift 46s ease-in-out infinite alternate}
-.aurora i:nth-child(1){width:46vw;height:46vw;left:48%;top:0;background:var(--teal)}
-.aurora i:nth-child(2){width:40vw;height:40vw;left:66%;top:18%;background:var(--plum);animation-delay:-12s}
-.aurora i:nth-child(3){width:30vw;height:30vw;left:30%;top:-8%;background:var(--navy);animation-delay:-20s}
-.aurora i:nth-child(4){width:18vw;height:18vw;left:58%;top:42%;background:var(--gold);opacity:calc(var(--glow)*.7);animation-delay:-30s}
-@keyframes drift{to{transform:translate(-6vw,4vw) scale(1.12)}}
-.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,4vw,60px);align-items:center}
-.hero h1{font-size:clamp(38px,5.4vw,64px);letter-spacing:-.01em}
-.hero h1 em{font-style:italic;font-weight:500}
-.hero p.lead{font-size:clamp(17px,1.6vw,20px);color:var(--mute);max-width:34em;margin:20px 0 28px}
-.hero .cta{display:flex;flex-wrap:wrap;gap:12px}
-.hero .doc{margin-top:28px;display:flex;gap:14px;align-items:center;font-size:15px;color:var(--mute)}
-.hero .doc b{color:var(--ink);display:block;font-family:Fraunces,serif;font-size:18px}
-.arc{width:100%;aspect-ratio:600/700;max-height:600px}
-.arc .p{animation:float 7s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
-@keyframes float{to{transform:translateY(-8px)}}
-/* wheel story */
-.story{position:relative;background:linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--bg) 90%,var(--navy)) 50%,var(--bg))}
-.story .intro{text-align:center;padding:clamp(40px,6vw,80px) 0 10px}
-.story .intro h2{font-size:clamp(32px,4.2vw,48px)}
-.story .intro p{color:var(--mute);max-width:36em;margin:14px auto 0}
-.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,64px)}
-.wheelbox{position:sticky;top:76px;height:calc(100vh - 96px);display:grid;place-items:center}
-.wheel{width:min(100%,560px);aspect-ratio:1/1;position:relative}
-.wheel svg{width:100%;height:100%;overflow:visible}
-.wheel .pb{transition:opacity .4s}
-.wheel .pb.dim{opacity:.32}
-.hub{position:absolute;inset:31%;border-radius:50%;display:grid;place-items:center;text-align:center;background:var(--card-solid);box-shadow:0 20px 50px -24px rgba(0,0,0,.7),inset 0 0 0 1px var(--line)}
-.hub small{display:block;font-weight:800;font-size:13px;color:var(--mute)}
-.hub b{display:block;font-family:Fraunces,serif;font-weight:600;font-size:clamp(18px,2.2vw,26px);line-height:1.1;margin-top:4px;padding:0 8px}
-.ring{position:absolute;inset:29%;border-radius:50%;background:conic-gradient(var(--navy),var(--green),var(--gold),var(--amber),var(--teal),var(--rust),var(--indigo),var(--plum),var(--navy));-webkit-mask:radial-gradient(closest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(closest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));opacity:.85}
-.chapters{padding:8vh 0 18vh}
-.ch{min-height:86vh;display:flex;align-items:center}
-.ch article{background:var(--card);border-radius:26px;padding:clamp(22px,3vw,36px);box-shadow:0 1px 2px rgba(26,22,48,.05),0 18px 40px -22px rgba(26,22,48,.28);border:1px solid var(--line);position:relative;overflow:hidden;opacity:.45;transform:translateY(16px);transition:opacity .5s,transform .5s}
-.ch.on article{opacity:1;transform:none}
-.ch article:before{content:"";position:absolute;inset:0 0 auto;height:6px;background:var(--c)}
-.ch .tag{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:14px;color:var(--c2)}
-.ch .tag i{width:22px;height:25px;border-radius:52% 48% 46% 54%/58% 56% 44% 42%;background:var(--c);display:inline-block}
-.ch h3{font-size:clamp(26px,3vw,36px);margin:10px 0 10px}
-.ch p{margin:0 0 14px;color:var(--mute)}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
-.cols h4{margin:0 0 8px;font-size:14px;font-weight:800}
-.cols ul{margin:0;padding-left:18px;font-size:15.5px;line-height:1.5}
-.cols li{margin-bottom:6px}
-.urgent{margin-top:14px;border-radius:14px;padding:12px 14px;background:rgba(140,38,17,.26);border:1px solid rgba(235,120,96,.38);color:#FFB4A2;font-weight:700;font-size:15px}
-/* checklist, doctor, visit */
-.band{padding:clamp(48px,7vw,96px) 0}
-.band h2{font-size:clamp(30px,3.8vw,44px)}
-.check{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:28px}
-.check div{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;font-weight:600}
-.check svg{flex:none;width:30px;height:34px}
-.doctor{background:linear-gradient(135deg,var(--navy),#3a1a4c 55%,var(--teal));color:#fff;position:relative;overflow:hidden}
-.doctor:after{content:"";position:absolute;right:-10%;top:-30%;width:50vw;height:50vw;border-radius:50%;background:radial-gradient(circle,rgba(214,165,22,.35),transparent 60%)}
-.doctor .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
-.doctor p{color:rgba(255,255,255,.82)}
-.creds{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
-.creds li{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 16px;font-weight:700}
-.measure{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:24px}
-.measure h3{font-size:24px;margin-bottom:10px}
-.measure ul{margin:0;padding-left:18px;color:rgba(255,255,255,.85)}
-.visit .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px}
-.vcard{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:clamp(22px,3vw,34px)}
-.vcard dl{margin:18px 0 0;display:grid;grid-template-columns:auto 1fr;gap:12px 18px}
-.vcard dt{font-weight:800;font-size:14px;color:var(--mute)}
-.vcard dd{margin:0;font-weight:600}
-.phones a{display:block;text-decoration:none;font-weight:800;font-size:19px;white-space:nowrap}
-.bring{background:linear-gradient(160deg,color-mix(in srgb,var(--gold) 18%,var(--card)),var(--card));border:1px solid var(--line);border-radius:26px;padding:clamp(22px,3vw,34px)}
-.bring ul{padding-left:18px;margin:12px 0 0}
-footer{padding:34px 0 46px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
-footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between}
-@media (max-width:900px){
-  nav .links{display:none}
-  nav .wrap{gap:10px}
-  nav .nav-acts{margin-left:auto;display:flex;gap:8px;align-items:center}
-  nav .btn{min-height:40px;padding:0 12px;font-size:14px}
-  .hero .wrap,.doctor .wrap,.visit .wrap{grid-template-columns:minmax(0,1fr)}
-  .arc{max-height:380px;order:-1}
-  .stage{grid-template-columns:minmax(0,1fr);gap:0}
-  .wheelbox{height:40vh;top:68px;z-index:5;background:var(--bg);box-shadow:0 14px 18px -16px rgba(26,22,48,.35)}
-  .wheel{width:min(72vw,30vh)}
-  .ch{min-height:80vh;align-items:flex-start;padding-top:3vh}
+.hero{height:clamp(560px,88vh,900px);display:grid;place-items:center;text-align:center;color:#fff;--fb:#14321a}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,22,9,.45),rgba(8,22,9,.25) 40%,rgba(8,22,9,.55))}
+.hero .in{position:relative;z-index:2;padding:0 var(--pad);max-width:980px}
+.hero h1{color:#fdfbf4;font-size:clamp(42px,6.6vw,86px);line-height:1.02;letter-spacing:-.02em}
+.hero h1 em{font-style:italic}
+.hero p{margin:22px auto 30px;color:rgba(253,251,244,.86);font-size:clamp(16px,1.4vw,19px)}
+
+/* carousel */
+.band{padding:clamp(72px,10vw,140px) 0}
+.center{text-align:center}.center p{margin-left:auto;margin-right:auto}
+.car{position:relative;margin-top:44px}
+.track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px var(--pad) 24px;scrollbar-width:none;cursor:grab}
+.track::-webkit-scrollbar{display:none}
+.track.drag{cursor:grabbing;scroll-snap-type:none}.track.drag *{pointer-events:none}
+.card{flex:0 0 clamp(250px,24vw,310px);scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px 22px 24px;text-align:center;text-decoration:none;color:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:transform .35s,border-color .35s;font:inherit}
+.card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--c) 45%,var(--line))}
+.card svg{width:100%;max-width:220px;aspect-ratio:1/1}
+.card h3{font-size:24px;margin-top:14px}
+.card small{display:block;color:var(--mute);font-size:14px;margin-top:6px;line-height:1.45}
+.ctrl{display:flex;gap:10px;justify-content:center;margin-top:8px}
+.ctrl button{width:46px;height:46px;border-radius:50%;border:1.3px solid var(--ink);background:none;color:var(--ink);cursor:pointer;display:grid;place-items:center}
+.ctrl button:hover{background:var(--ink);color:var(--bg)}.ctrl svg{width:18px;height:18px}
+
+/* hand-drawn arrows */
+.arrow{display:block;margin:0 auto;width:120px;height:150px;color:var(--moss);overflow:visible}
+.arrow.wide{width:min(360px,70vw);height:150px}
+.arrow path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* split sections */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center}
+.split h2{font-size:clamp(30px,3.4vw,44px);margin-bottom:18px}
+.split p+p{margin-top:14px}
+.split .cta{margin-top:26px}
+.stack{position:relative;aspect-ratio:1/1;max-width:520px;width:100%;justify-self:center}
+.stack .slot{position:absolute;inset:6%;border-radius:22px;box-shadow:0 18px 40px -22px rgba(15,42,16,.45)}
+.steps{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:14px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;counter-increment:s}
+.steps li:before{content:counter(s);width:34px;height:34px;border-radius:50%;border:1.3px solid var(--ink);display:grid;place-items:center;font:500 16px var(--serif);color:var(--ink)}
+.steps b{color:var(--ink);font-weight:600}
+.illo{width:100%;max-width:520px;justify-self:center}
+
+/* measuring cards */
+.mcard{flex:0 0 clamp(270px,27vw,360px);scroll-snap-align:start;text-align:left}
+.mcard .slot{aspect-ratio:4/3.1;border-radius:var(--r)}
+.mcard h3{font-size:23px;margin-top:16px}
+.mcard p{font-size:15px;color:var(--mute);margin-top:6px}
+
+/* stacking panels */
+.panels{position:relative}
+.panel{position:sticky;top:0;height:100vh;min-height:560px;color:#fdfbf4}
+.panel .slot{position:absolute;inset:0}
+.panel:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,18,8,.62),rgba(6,18,8,0) 55%)}
+.panel .cap{position:absolute;z-index:2;left:var(--pad);right:var(--pad);bottom:clamp(36px,7vh,80px);max-width:1280px;margin:0 auto}
+.panel h3{color:#fdfbf4;font-size:clamp(34px,5vw,64px);max-width:12em}
+.panel p{color:rgba(253,251,244,.85);margin-top:12px}
+.panel .chip{display:inline-flex;gap:8px;align-items:center;background:rgba(253,251,244,.14);border:1px solid rgba(253,251,244,.25);border-radius:999px;padding:6px 14px;font:600 13px var(--sans);margin-bottom:16px}
+
+/* doctor */
+.doc{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px;align-items:stretch}
+.doc .q{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(28px,4vw,52px)}
+.doc .q h3{font-size:clamp(28px,3vw,40px)}
+.doc .q p{margin-top:16px}
+.creds{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding:0;list-style:none}
+.creds li{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:600 14px var(--sans);color:var(--ink);background:var(--bg)}
+.doc .slot{border-radius:var(--r);min-height:340px;--fb:#e9eedb}
+
+/* signs */
+.signs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 48px;margin-top:40px;padding:0;list-style:none;border-top:1px solid var(--line)}
+.signs li{display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:17px}
+.signs svg{width:30px;height:34px}
+
+/* lime band */
+.limeband{background:var(--lime);padding:clamp(36px,5vw,56px) 0}
+.limeband .wrap{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(20px,4vw,56px);align-items:center}
+.limeband h2{font-size:clamp(26px,3vw,40px);max-width:20em}
+.limeband svg.mini{width:110px;height:110px}
+.limeband .cta .pill,.limeband .cta .arr{background:var(--card)}
+
+/* visit */
+.visit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px)}
+.visit dl{display:grid;grid-template-columns:auto 1fr;gap:16px 24px;margin-top:28px}
+.visit dt{font:600 13px var(--sans);color:var(--mute);padding-top:3px}
+.visit dd{margin:0;color:var(--ink);font-size:17px}
+.visit dd a{display:block;font:400 24px/1.35 var(--serif);text-decoration:none;white-space:nowrap}
+.bring{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(26px,3.5vw,44px)}
+.bring ul{margin:16px 0 0;padding-left:20px;display:grid;gap:8px}
+
+/* footer */
+footer{background:var(--forest);color:rgba(253,251,244,.82);border-radius:28px 28px 0 0;margin-top:clamp(60px,8vw,110px);padding:clamp(44px,6vw,72px) 0 30px}
+footer .grid{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(2,minmax(0,1fr));gap:40px}
+footer h4{font:400 18px var(--serif);color:var(--lime);margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid rgba(253,251,244,.15)}
+footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;font-size:15px}
+footer a{text-decoration:none}footer a:hover{text-decoration:underline}
+footer .tag{font:400 24px/1.25 var(--serif);color:#fdfbf4;margin:18px 0 20px;max-width:14em}
+footer .base{display:flex;flex-wrap:wrap;gap:10px 28px;justify-content:space-between;border-top:1px solid rgba(253,251,244,.15);margin-top:44px;padding-top:22px;font-size:13px}
+
+/* condition sheet */
+dialog{margin:auto;border:0;padding:0;background:var(--bg);color:var(--text);width:min(760px,100vw);max-height:92vh;border-radius:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,.45)}
+dialog::backdrop{background:rgba(15,42,16,.55)}
+dialog .head{display:grid;grid-template-columns:120px 1fr auto;gap:20px;align-items:center;padding:26px 28px 6px}
+dialog .head svg{width:120px;height:120px}
+dialog .head small{font:600 13px var(--sans);color:var(--c)}
+dialog h3{font-size:clamp(28px,3.4vw,38px);margin-top:4px}
+dialog .body{padding:8px 28px 30px;overflow:auto;max-height:calc(92vh - 170px)}
+dialog .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px}
+dialog h4{font:600 14px var(--sans);color:var(--ink);margin:0 0 8px}
+dialog ul{padding-left:18px;margin:0;display:grid;gap:6px;font-size:15.5px}
+dialog .urgent{margin-top:20px;background:#f8e3dc;color:#7a2410;border-radius:14px;padding:14px 16px;font-weight:600}
+dialog .close{width:46px;height:46px;border-radius:50%;border:1.3px solid var(--ink);background:none;color:var(--ink);font-size:22px;cursor:pointer;align-self:start}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease}.rv.in{opacity:1;transform:none}
+
+@media (max-width:980px){
+  nav.links,header .cta{display:none}.menu{display:block}
+  .split,.doc,.visit{grid-template-columns:minmax(0,1fr)}
+  .split .stack,.split .illo{order:-1;max-width:420px}
+  footer .grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}footer .grid>div:first-child{grid-column:1/-1}
+  .limeband .wrap{grid-template-columns:minmax(0,1fr)}.limeband svg.mini{display:none}
 }
-@media (max-width:600px){.cols{grid-template-columns:minmax(0,1fr)}.hub b{font-size:16px}.hub small{font-size:11px}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media (max-width:640px){
+  .signs{grid-template-columns:minmax(0,1fr)}
+  dialog .head{grid-template-columns:72px 1fr auto;padding:20px 18px 4px}dialog .head svg{width:72px;height:72px}
+  dialog .body{padding:6px 18px 24px}dialog .cols{grid-template-columns:minmax(0,1fr)}
+  dialog{border-radius:22px 22px 0 0;margin:auto 0 0;width:100vw;max-width:100vw}
+  .brand small{display:none}
+  footer .grid{grid-template-columns:minmax(0,1fr)}
+  .panel{min-height:480px}
+}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.sheet,.card,.cta *{transition:none}}
 </style>
 </head>
 <body>
-<nav><div class="wrap">
-  <a href="#top" aria-label="Peds Endo Clinic home"><img src="logo.png" alt="Peds Endo Clinic"></a>
-  <div class="links"><a href="#conditions">What we treat</a><a href="#when">When to visit</a><a href="#doctor">Doctor</a><a href="#visit">Visit</a></div>
-  <div class="nav-acts" style="display:flex;gap:10px;align-items:center;margin-left:auto">
-    <a class="btn ghost" href="app.html">Doctor login</a>
-    <a class="btn dark" href="tel:+919850631399"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
-  </div>
-</div></nav>
+<a class="skip" href="#main">Skip to content</a>
 
-<header class="hero" id="top">
-  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-  <div class="wrap">
-    <div>
-      <h1>Hormone and growth care for <em>children</em>, in Latur</h1>
-      <p class="lead">Short height, early or late puberty, thyroid problems, diabetes, rickets: hormone problems in children are common and very treatable when they are found early. We measure carefully, explain clearly, and follow your child as they grow.</p>
-      <div class="cta">
-        <a class="btn gold" href="#conditions">See what we treat</a>
-        <a class="btn ghost" href="#visit">How to visit</a>
-      </div>
-      <div class="doc"><div><b>Dr. Vijay Shripad Dhawle</b>DCH, DNB Pediatrics · Fellow in Pediatric Endocrinology (B.J. Wadia Hospital, Mumbai)</div></div>
-    </div>
-    <svg class="arc" id="arc" viewBox="-20 -24 600 700" role="img" aria-label="The eight glands the clinic cares for, drawn as the pebbles of the clinic logo"></svg>
-  </div>
-</header>
+<header class="top" id="top"><div class="wrap">
+  <a class="brand" href="#main" aria-label="Peds Endo Clinic, home"><span class="tile"><img src="assets/logo.png" alt=""></span><span><b>Peds Endo Clinic</b><small>Latur</small></span></a>
+  <nav class="links" aria-label="Main"><a href="#treat">What we treat</a><a href="#visit-how">Your visit</a><a href="#doctor">Doctor</a><a href="#contact">Contact</a><a href="app.html">Doctor login</a></nav>
+  <a class="cta" href="tel:+919850631399"><span class="pill">Book a visit</span><span class="arr">ARROW</span></a>
+  <button class="menu" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="sheet"><span></span><span></span><span></span></button>
+</div></header>
+<div class="sheet" id="sheet" aria-hidden="true">
+  <button class="x" id="menuClose" aria-label="Close menu">×</button>
+  <a href="#treat">What we treat</a><a href="#visit-how">Your visit</a><a href="#doctor">Doctor</a><a href="#contact">Contact</a><a href="app.html">Doctor login</a>
+  <a class="cta" href="tel:+919850631399"><span class="pill">Call 98506 31399</span><span class="arr">ARROW</span></a>
+</div>
 
-<section class="story" id="conditions">
-  <div class="wrap intro">
-    <h2>Eight glands. One child.</h2>
-    <p>Each pebble in our logo stands for a part of the body that makes hormones. Scroll to turn the wheel and see the problems we look after in each one.</p>
-  </div>
-  <div class="wrap stage">
-    <div class="wheelbox"><div class="wheel">
-      <svg id="wheel" viewBox="-300 -300 600 600" aria-hidden="true"></svg>
-      <div class="ring"></div>
-      <div class="hub" aria-live="polite"><div><small id="hubN">1 of 8</small><b id="hubT">Brain</b></div></div>
-    </div></div>
-    <div class="chapters" id="chapters"></div>
+<main id="main">
+<section class="hero slot" data-img="images/hero.jpg">
+  <svg class="art" id="heroArt" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+  <img class="ph" alt="Dr. Dhawle measuring a child's height at the clinic">
+  <span class="tag">images/hero.jpg</span>
+  <div class="in">
+    <h1>Helping children grow well, <em>here in Latur</em></h1>
+    <p>Care for children's growth, puberty, thyroid, diabetes and bone problems, from a pediatrician trained in children's hormones.</p>
+    <a class="cta" href="tel:+919850631399"><span class="pill">Book a visit</span><span class="arr">ARROW</span></a>
   </div>
 </section>
 
-<section class="band" id="when"><div class="wrap">
-  <h2>When should a child see a pediatric endocrinologist?</h2>
-  <p style="color:var(--mute);max-width:40em">If any of these sound familiar, an appointment is worth it. Bring old height and weight records if you have them.</p>
-  <div class="check" id="check"></div>
+<section class="band" id="treat">
+  <div class="wrap center rv"><h2>Whatever your child needs help with</h2><p style="margin-top:14px">Each pebble in our logo is a gland that makes hormones. Tap one to see what we look after.</p></div>
+  <div class="car">
+    <div class="track" id="cards" tabindex="0" aria-label="Conditions we treat"></div>
+    <div class="ctrl"><button id="prev" aria-label="Previous">LEFT</button><button id="next" aria-label="Next">ARROW</button></div>
+  </div>
+</section>
+
+<svg class="arrow" viewBox="0 0 120 150" aria-hidden="true"><path class="draw" d="M14 4 C 40 10, 70 22, 74 46 C 78 70, 52 78, 50 64 C 48 50, 72 50, 80 66 C 90 86, 70 110, 72 140 M 62 128 L 72 142 L 84 130"/></svg>
+
+<section class="band" style="padding-top:clamp(28px,4vw,48px)"><div class="wrap split">
+  <div class="stack" id="stack">
+    <div class="slot" data-img="images/stack-3.jpg" style="--fb:#e3ecd0"><svg class="art" viewBox="0 0 400 400" aria-hidden="true" data-fill="thy"></svg><img class="ph" alt="The clinic waiting area"><span class="tag">images/stack-3.jpg</span></div>
+    <div class="slot" data-img="images/stack-2.jpg" style="--fb:#d9e8e4"><svg class="art" viewBox="0 0 400 400" aria-hidden="true" data-fill="ova"></svg><img class="ph" alt="The consulting room"><span class="tag">images/stack-2.jpg</span></div>
+    <div class="slot" data-img="images/stack-1.jpg" style="--fb:#14321a"><svg class="art" viewBox="0 0 400 400" aria-hidden="true" data-fill="ring"></svg><img class="ph" alt="Latur Diabetes Centre, where the clinic is"><span class="tag">images/stack-1.jpg</span></div>
+  </div>
+  <div class="rv">
+    <h2>Caring for children across Marathwada</h2>
+    <p>Families come to us from Latur and the towns around it when a child is not growing as expected, when puberty comes too early or too late, or when a blood test shows a hormone problem.</p>
+    <p>Most of these problems are common, and very treatable when they are found early.</p>
+    <a class="cta line" href="#treat"><span class="pill">What we treat</span><span class="arr">ARROW</span></a>
+  </div>
 </div></section>
 
-<section class="band doctor" id="doctor"><div class="wrap">
-  <div>
-    <h2>Dr. Vijay Shripad Dhawle</h2>
-    <p>Pediatrician with fellowship training in pediatric endocrinology, caring for children's growth and hormone problems at Peds Endo Clinic, Latur Diabetes Centre.</p>
-    <ul class="creds"><li>DCH, DNB Pediatrics</li><li>Fellow in Pediatric Endocrinology, B.J. Wadia Hospital, Mumbai</li><li>Regd. No. 81887</li></ul>
+<svg class="arrow wide" viewBox="0 0 360 150" aria-hidden="true"><path class="draw" d="M300 4 C 300 60, 270 92, 200 96 C 120 100, 70 104, 52 140 M 40 124 L 52 142 L 68 132"/></svg>
+
+<section class="band" id="visit-how" style="padding-top:clamp(28px,4vw,48px)"><div class="wrap split">
+  <div class="rv">
+    <h2>A visit built around your child</h2>
+    <p>We take time to measure properly and to explain what the numbers mean, in plain words.</p>
+    <ol class="steps">
+      <li><span><b>Measure.</b> Height, weight and body proportions, taken carefully.</span></li>
+      <li><span><b>Chart.</b> Plotted on Indian (IAP 2015) and WHO growth charts, next to the height expected from both parents.</span></li>
+      <li><span><b>Explain.</b> What is normal, what needs tests, and what the plan is.</span></li>
+      <li><span><b>Follow up.</b> Growth speed checked at every visit, so changes are noticed early.</span></li>
+    </ol>
+    <a class="cta line" href="#contact"><span class="pill">Plan your visit</span><span class="arr">ARROW</span></a>
   </div>
-  <div class="measure">
-    <h3>How we follow your child's growth</h3>
-    <ul>
-      <li>Height and weight plotted on Indian (IAP 2015) and WHO growth charts at every visit</li>
-      <li>Your child's expected height worked out from both parents' heights</li>
-      <li>Growth speed tracked between visits, so slowing is noticed early</li>
-      <li>Bone age and blood tests when needed, explained in plain words</li>
-    </ul>
+  <svg class="illo" id="chartIllo" viewBox="0 0 520 470" role="img" aria-label="Drawing of a growth chart with a child's height dots rising along a centile line"></svg>
+</div></section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap center rv"><h2>It all starts with careful measuring…</h2><p style="margin-top:14px">Good decisions about a child's hormones come from good numbers. These are the things we look at.</p></div>
+  <div class="car"><div class="track" id="measure" tabindex="0" aria-label="What we measure"></div></div>
+</section>
+
+<svg class="arrow" viewBox="0 0 120 150" aria-hidden="true"><path class="draw" d="M60 2 C 30 24, 26 50, 54 58 C 80 66, 84 40, 64 40 C 40 40, 36 76, 58 100 C 66 110, 62 126, 60 142 M 48 130 L 60 144 L 72 130"/></svg>
+<div class="wrap center rv" style="padding:24px 0 clamp(48px,6vw,80px)"><h2>…and we follow your child as they grow.</h2></div>
+
+<section class="panels" aria-label="How we follow children over time">
+  <div class="panel"><div class="slot" data-img="images/follow-1.jpg" style="--fb:#1c1a52"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="0"></svg><img class="ph" alt="Reviewing a growth chart with parents"><span class="tag">images/follow-1.jpg</span></div>
+    <div class="cap"><span class="chip">Every visit</span><h3>Measured, plotted and compared with last time</h3><p>Small changes in growth speed are often the first sign that something needs attention.</p></div></div>
+  <div class="panel"><div class="slot" data-img="images/follow-2.jpg" style="--fb:#1b6b6e"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="1"></svg><img class="ph" alt="The doctor explaining results to a family"><span class="tag">images/follow-2.jpg</span></div>
+    <div class="cap"><span class="chip">Every result</span><h3>Explained in words parents can use</h3><p>You leave knowing what was found, what it means, and what happens next.</p></div></div>
+  <div class="panel"><div class="slot" data-img="images/follow-3.jpg" style="--fb:#4b1939"><svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-panel="2"></svg><img class="ph" alt="A teenager at a follow-up visit"><span class="tag">images/follow-3.jpg</span></div>
+    <div class="cap"><span class="chip">Year after year</span><h3>Followed until they are fully grown</h3><p>Hormone care for children is a long journey. We keep every measurement so the whole story is in one place.</p></div></div>
+</section>
+
+<section class="band" id="doctor"><div class="wrap">
+  <div class="doc">
+    <div class="q rv">
+      <h3>Dr. Vijay Shripad Dhawle</h3>
+      <p>A pediatrician with fellowship training in pediatric endocrinology, the care of children's hormones and growth. He sees children and teenagers at Peds Endo Clinic, Latur Diabetes Centre.</p>
+      <ul class="creds"><li>DCH, DNB Pediatrics</li><li>Fellow in Pediatric Endocrinology, B.J. Wadia Hospital, Mumbai</li><li>Regd. No. 81887</li></ul>
+    </div>
+    <div class="slot" data-img="images/doctor.jpg"><svg class="art" viewBox="0 0 400 420" aria-hidden="true" data-fill="logo"></svg><img class="ph" alt="Dr. Vijay Shripad Dhawle"><span class="tag">images/doctor.jpg</span></div>
   </div>
 </div></section>
 
-<section class="band visit" id="visit"><div class="wrap">
-  <div class="vcard">
+<section class="band" style="padding-top:0"><div class="wrap">
+  <h2 class="rv">Signs worth a check</h2>
+  <p class="rv" style="margin-top:12px">If any of these sound familiar, an appointment is worth it.</p>
+  <ul class="signs" id="signs"></ul>
+</div></section>
+
+<section class="limeband"><div class="wrap">
+  <svg class="mini" id="miniIllo" viewBox="0 0 120 120" aria-hidden="true"></svg>
+  <h2>Worried about your child's height, weight or puberty? Let's take a look.</h2>
+  <a class="cta" href="tel:+919850631399"><span class="pill">Call to book</span><span class="arr">ARROW</span></a>
+</div></section>
+
+<section class="band" id="contact"><div class="wrap visit">
+  <div class="rv">
     <h2>Visit the clinic</h2>
     <dl>
       <dt>Address</dt><dd>Latur Diabetes Centre, 1st Floor, Ashok Hotel, Latur, Maharashtra 413512</dd>
-      <dt>Phone</dt><dd class="phones"><a href="tel:+919850631399">98506 31399</a><a href="tel:+912382250213">02382 250213</a><a href="tel:+912382255224">02382 255224</a></dd>
+      <dt>Phone</dt><dd><a href="tel:+919850631399">98506 31399</a><a href="tel:+912382250213">02382 250213</a><a href="tel:+912382255224">02382 255224</a></dd>
       <dt>Timings</dt><dd>Please call to book a time.</dd>
     </dl>
-    <div class="cta" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:22px">
-      <a class="btn dark" href="tel:+919850631399">Call to book</a>
-      <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query=Latur%20Diabetes%20Centre%20Ashok%20Hotel%20Latur%20413512">Get directions</a>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:30px">
+      <a class="cta" href="tel:+919850631399"><span class="pill">Call to book</span><span class="arr">ARROW</span></a>
+      <a class="cta line" href="https://www.google.com/maps/search/?api=1&amp;query=Latur%20Diabetes%20Centre%20Ashok%20Hotel%20Latur%20413512"><span class="pill">Get directions</span><span class="arr">ARROW</span></a>
     </div>
   </div>
-  <div class="bring">
-    <h3 style="font-size:26px">What to bring</h3>
+  <div class="bring rv">
+    <h3>What to bring</h3>
     <ul>
-      <li>Any old height and weight records (school, Anganwadi or doctor's cards)</li>
+      <li>Old height and weight records: school, Anganwadi or doctor's cards</li>
       <li>Both parents' heights, if you know them</li>
       <li>Previous blood reports, X-rays and prescriptions</li>
-      <li>Birth details: weight at birth, term or preterm, NICU stay</li>
+      <li>Birth details: birth weight, full term or preterm, any NICU stay</li>
       <li>The OPD paper from your last visit, for follow-ups</li>
     </ul>
   </div>
 </div></section>
+</main>
 
 <footer><div class="wrap">
-  <div>© Peds Endo Clinic, Latur · Dr. Vijay Shripad Dhawle · <a href="app.html" style="text-decoration:underline;text-underline-offset:3px">Doctor login</a></div>
-  <div>This page explains common problems. It is not a diagnosis. In an emergency, go to the nearest hospital.</div>
+  <div class="grid">
+    <div>
+      <a class="brand" href="#main"><span class="tile"><img src="assets/logo.png" alt="Peds Endo Clinic"></span></a>
+      <p class="tag">Hormone and growth care for children, in Latur.</p>
+      <a class="cta" href="tel:+919850631399"><span class="pill">Book a visit</span><span class="arr">ARROW</span></a>
+    </div>
+    <div><h4>What we treat</h4><ul id="footList"></ul></div>
+    <div><h4>Clinic</h4><ul>
+      <li><a href="#visit-how">Your visit</a></li><li><a href="#doctor">Doctor</a></li><li><a href="#contact">Address and phones</a></li>
+      <li><a href="app.html">Doctor login</a></li>
+      <li><a href="https://www.google.com/maps/search/?api=1&amp;query=Latur%20Diabetes%20Centre%20Ashok%20Hotel%20Latur%20413512">Directions</a></li></ul></div>
+  </div>
+  <div class="base"><span>© Peds Endo Clinic, Latur · Dr. Vijay Shripad Dhawle</span><span>This site explains common problems. It is not a diagnosis. In an emergency, go to the nearest hospital.</span></div>
 </div></footer>
 
+<dialog id="cond" aria-labelledby="condT"><div class="head"><svg id="condArt" viewBox="0 0 220 220" aria-hidden="true"></svg><div><small id="condK"></small><h3 id="condT"></h3></div><button class="close" id="condX" aria-label="Close">×</button></div><div class="body" id="condB"></div></dialog>
+
+<script src="assets/js/lenis.min.js"></script>
+<script src="assets/js/gsap.min.js"></script>
+<script src="assets/js/ScrollTrigger.min.js"></script>
 <script>
 {
 const ICONS={"brain": "M -32 6 C -38 -12,-24 -30,-4 -28 C 12 -36,34 -26,34 -6 C 40 6,30 20,16 18 C 10 26,-2 26,-8 20 C -22 24,-34 18,-32 6 Z M -22 -14 C -14 -20,-6 -10,0 -16 C 6 -22,14 -16,22 -18 M -24 2 C -16 -6,-8 4,0 -4 C 8 -10,16 0,26 -6 M -8 10 C -2 4,6 14,14 8 M 6 20 C 8 28,12 32,18 36 M 16 18 C 24 24,32 20,32 12", "pit": "M -14 -26 C -14 -34,-4 -36,-2 -28 M -2 -28 C -4 -14,-6 0,-6 14 M -6 0 C 4 -12,22 -8,22 6 C 22 20,8 26,-6 16", "thy": "M -6 6 C -10 -10,-14 -28,-24 -30 C -34 -32,-36 -16,-36 0 C -36 18,-30 30,-18 30 C -10 30,-8 20,-6 14 C -2 18,2 18,6 14 C 8 20,10 30,18 30 C 30 30,36 18,36 0 C 36 -16,34 -32,24 -30 C 14 -28,10 -10,6 6 C 2 10,-2 10,-6 6 Z M -26 -16 C -22 -4,-28 10,-22 20 M 26 -16 C 22 -4,28 10,22 20", "gon": "M -10 -8 C -6 -26,24 -30,34 -14 C 42 0,28 14,10 14 C -6 16,-14 6,-10 -8 Z M 2 -14 C 6 -6,14 -18,18 -8 C 22 0,28 -10,30 -2 M 0 2 C 8 6,14 -2,22 4 M -10 2 C -22 10,-34 16,-44 14 C -40 22,-26 22,-14 12", "ova": "M -14 -30 C -26 -30,-28 -8,-24 6 C -20 22,-12 32,-4 28 C 4 22,2 2,-2 -12 C -6 -24,-8 -30,-14 -30 Z M 12 -30 C 0 -30,-2 -8,2 6 C 6 22,14 32,22 28 C 30 22,28 2,24 -12 C 20 -24,18 -30,12 -30 Z M -14 -20 C -16 -6,-12 10,-8 20 M 12 -20 C 10 -6,14 10,18 20", "adr": "M -2 -34 C 6 -30,6 -14,10 -2 C 16 12,26 22,16 30 C 2 38,-20 34,-26 24 C -30 14,-20 6,-14 -4 C -8 -14,-10 -30,-2 -34 Z", "pan": "M -38 -2 C -38 -14,-24 -16,-14 -12 C 0 -6,20 -14,34 -10 C 42 -8,42 2,34 4 C 20 6,4 6,-8 10 C -22 16,-38 12,-38 -2 Z M -28 0 C -10 -2,10 -4,32 -4", "kid": "M 6 -34 C 26 -34,30 -10,26 6 C 22 24,10 36,-4 34 C -14 32,-16 22,-10 14 C -6 8,-8 0,-12 -6 C -18 -20,-10 -34,6 -34 Z M -10 8 C -20 14,-22 26,-20 38 M -8 0 C -2 2,4 0,8 -4"};
 const EGG="M 86 0 C 86 22, 46 58, -14 64 C -56 68, -82 40, -82 0 C -82 -40, -56 -68, -14 -64 C 46 -58, 86 -22, 86 0 Z";
+const ARROW='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+const LEFT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+document.querySelectorAll('.arr').forEach(e=>{if(e.textContent==='ARROW')e.innerHTML=ARROW});
+document.querySelectorAll('#prev').forEach(e=>e.innerHTML=LEFT);document.querySelectorAll('#next').forEach(e=>e.innerHTML=ARROW);
+
 const G=[
- {k:'brain',c:'#1c1a52',s:'#ece8f8',t:'Brain',h:'The control centre',p:'The hypothalamus, at the base of the brain, tells every other gland what to do. Problems here can show up as early puberty, extreme thirst or changes in growth.',
-  w:['Early puberty starting in the brain','Diabetes insipidus (too much urine, constant thirst)','Hormone problems after brain tumours or their treatment','Hunger and weight-control problems'],
-  n:['Breast or pubic hair growth at a very young age','Drinking and passing very large amounts of water','Growth slowing along with headaches or vision problems']},
- {k:'pit',c:'#1d4a23',s:'#bfe8a6',t:'Pituitary',h:'The growth gland',p:'The pituitary, a pea-sized gland below the brain, makes growth hormone and controls the thyroid, adrenals and puberty.',
+ {k:'pit',c:'#1d4a23',t:'Growth',g:'Pituitary gland',s:'Short height, slow growth',p:'The pituitary, a pea-sized gland below the brain, makes growth hormone and controls several other glands.',
   w:['Short stature and slow growth','Growth hormone deficiency','Children born small (SGA) who do not catch up','Low levels of several pituitary hormones'],
-  n:['Much shorter than classmates, or the shortest in class every year','Clothes and shoes still fit after a whole year','Height falling further below the family\'s expected height']},
- {k:'thy',c:'#d6a516',s:'#fbe98e',t:'Thyroid',h:'The energy gland',p:'The butterfly-shaped thyroid in the neck sets the body\'s speed. Too little or too much thyroid hormone affects growth, energy and learning.',
-  w:['Congenital hypothyroidism (found on newborn screening)','Hypothyroidism in older children','Overactive thyroid (hyperthyroidism)','Goitre (neck swelling) and thyroid nodules'],
+  n:['Much shorter than classmates, year after year','Clothes and shoes still fit after a whole year','Height falling further below the family\'s expected height']},
+ {k:'thy',c:'#9a7409',t:'Thyroid',g:'Thyroid gland',s:'Neck swelling, tiredness, newborn screening',p:'The butterfly-shaped thyroid in the neck sets the body\'s speed. Too little or too much thyroid hormone affects growth, energy and learning.',
+  w:['Congenital hypothyroidism (found on newborn screening)','Underactive thyroid in older children','Overactive thyroid','Goitre (neck swelling) and nodules'],
   n:['A swelling in the front of the neck','Tiredness, constipation, dry skin, poor growth','Weight loss, fast heartbeat, shaking hands','A newborn thyroid test reported as abnormal']},
- {k:'gon',c:'#8e4612',s:'#f7c891',t:'Testes',h:'Puberty in boys',p:'Puberty that starts too early or too late, and some problems found at birth, are best checked by a specialist.',
+ {k:'gon',c:'#8e4612',t:'Puberty in boys',g:'Testes',s:'Too early, too late, undescended testes',p:'Puberty that starts too early or too late, and some conditions noticed at birth, are best checked by a specialist.',
   w:['Early puberty (before 9 years)','Delayed puberty (no changes by 14 years)','Undescended testes','Small penis or unclear genitals at birth','Breast growth in boys'],
   n:['Pubic hair, deep voice or growth spurt before 9','No signs of puberty by 14','A testis that cannot be felt in the scrotum']},
- {k:'ova',c:'#1b6b6e',s:'#aef2ee',t:'Ovaries',h:'Puberty and periods in girls',p:'Breast development, growth spurts and periods follow a pattern. When the timing is off, there is usually a hormone reason that can be treated.',
+ {k:'ova',c:'#1b6b6e',t:'Puberty and periods',g:'Ovaries',s:'Early puberty, irregular periods, PCOS',p:'Breast development, growth spurts and periods follow a pattern. When the timing is off, there is usually a hormone reason that can be treated.',
   w:['Early puberty (before 8 years)','Delayed puberty (no breast growth by 13)','Irregular or absent periods, PCOS','Turner syndrome'],
   n:['Breast growth or periods at a very young age','No breast growth by 13, or no periods by 15','Short height with puffy hands or feet at birth']},
- {k:'adr',c:'#8c2611',s:'#f8c7ad',t:'Adrenal glands',h:'The stress and salt glands',p:'The small adrenal glands above the kidneys make cortisol, salt-balancing and some male-type hormones.',
-  w:['Congenital adrenal hyperplasia (CAH)','Adrenal insufficiency','Early body odour or pubic hair','Cushing syndrome (too much cortisol)'],
-  n:['A newborn with unclear genitals, vomiting or poor weight gain','Body odour or pubic hair in a young child','Weight gain while height growth slows down']},
- {k:'pan',c:'#232170',s:'#c0cdf7',t:'Pancreas',h:'Sugar and diabetes',p:'The pancreas makes insulin. Type 1 diabetes can start at any age in childhood, and type 2 is now seen in overweight teenagers.',
-  w:['Type 1 diabetes','Type 2 diabetes and pre-diabetes in teens','Low blood sugar (hypoglycaemia)','Childhood obesity with hormone checks'],
-  n:['Constant thirst and passing urine often, bedwetting again','Weight loss and tiredness despite eating','Dark, velvety skin on the neck or armpits'],
+ {k:'pan',c:'#232170',t:'Diabetes',g:'Pancreas',s:'Thirst, weight loss, low sugar',p:'The pancreas makes insulin. Type 1 diabetes can start at any age in childhood, and type 2 is now seen in overweight teenagers.',
+  w:['Type 1 diabetes','Type 2 diabetes and pre-diabetes in teens','Low blood sugar (hypoglycaemia)','Childhood obesity, with hormone checks'],
+  n:['Constant thirst, passing urine often, bedwetting again','Weight loss and tiredness despite eating','Dark, velvety skin on the neck or armpits'],
   u:'If a child with heavy thirst is also vomiting, breathing fast or very drowsy, go to a hospital emergency straight away.'},
- {k:'kid',c:'#4b1939',s:'#f3cbe2',t:'Kidneys and bones',h:'Calcium, vitamin D and rickets',p:'Strong bones need calcium, phosphate and vitamin D, balanced by the kidneys and hormones. When this goes wrong, legs bow and bones ache.',
+ {k:'kid',c:'#4b1939',t:'Bones and rickets',g:'Kidneys and bones',s:'Bowed legs, bone pain, low calcium',p:'Strong bones need calcium, phosphate and vitamin D, balanced by the kidneys and hormones. When this goes wrong, legs bow and bones ache.',
   w:['Rickets and vitamin D deficiency','Low or high calcium','Phosphate-losing (kidney) rickets','Weak bones and repeated fractures'],
-  n:['Bowed legs or knock knees that are getting worse','Late walking, bone pain, muscle cramps or twitching','Fractures from small falls']},
+  n:['Bowed legs or knock knees that are getting worse','Late walking, bone pain, cramps or twitching','Fractures from small falls']},
+ {k:'adr',c:'#8c2611',t:'Adrenal glands',g:'Adrenals',s:'CAH, early body hair, cortisol problems',p:'The small adrenal glands above the kidneys make cortisol, salt-balancing hormones and some male-type hormones.',
+  w:['Congenital adrenal hyperplasia (CAH)','Adrenal insufficiency','Early body odour or pubic hair','Too much cortisol (Cushing syndrome)'],
+  n:['A newborn with unclear genitals, vomiting or poor weight gain','Body odour or pubic hair in a young child','Weight gain while height growth slows down']},
+ {k:'brain',c:'#1c1a52',t:'Brain and hormones',g:'Hypothalamus',s:'Thirst, early puberty, after brain illness',p:'The hypothalamus, at the base of the brain, tells every other gland what to do.',
+  w:['Early puberty starting in the brain','Diabetes insipidus (too much urine, constant thirst)','Hormone problems after brain tumours or their treatment'],
+  n:['Puberty signs at a very young age','Drinking and passing very large amounts of water','Growth slowing along with headaches or vision problems']},
 ];
 const $=id=>document.getElementById(id);
-const egg=(g,extra='')=>`<path d="${EGG}" fill="${g.c}" ${extra}/>`;
-const icon=g=>`<path d="${ICONS[g.k]}" fill="none" stroke="${g.s}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" transform="scale(1.5)"/>`;
-
-/* hero arc: same arrangement as the logo */
-const ARC=[[455,120],[330,85],[200,135],[105,240],[78,368],[120,492],[235,568],[365,575]];
-$('arc').innerHTML=`<defs><radialGradient id="sh" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>`+
- G.map((g,i)=>{const [x,y]=ARC[i];const a=Math.atan2(330-y,330-x)*180/Math.PI;
-  return `<g class="p" style="animation-delay:${-i*.9}s"><g transform="translate(${x},${y})"><g transform="rotate(${a.toFixed(1)}) scale(1.05,1.02)">${egg(g)}<path d="${EGG}" fill="url(#sh)"/></g><g>${icon(g)}</g></g></g>`}).join('')+
- `<text x="330" y="318" text-anchor="middle" font-family="Fraunces,serif" font-size="40" font-weight="600" fill="currentColor" style="color:var(--ink)">Peds Endo</text><text x="330" y="364" text-anchor="middle" font-family="Fraunces,serif" font-size="40" font-style="italic" fill="#72D572">Clinic</text>`;
-
-/* wheel */
-const R=208;
-$('wheel').innerHTML=`<defs><radialGradient id="sh2" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><g id="rot">`+
- G.map((g,i)=>`<g class="pb" data-i="${i}" transform="rotate(${i*45}) translate(${R},0)"><g class="sc"><g transform="rotate(180)">${egg(g)}<path d="${EGG}" fill="url(#sh2)"/></g><g class="up">${icon(g)}</g></g></g>`).join('')+`</g>`;
-
-/* chapters */
-$('chapters').innerHTML=G.map((g,i)=>`<section class="ch" data-i="${i}" style="--c:${g.c};--c2:${g.s}"><article>
-  <span class="tag"><i></i>${i+1} of 8 · ${g.t}</span><h3>${g.h}</h3><p>${g.p}</p>
-  <div class="cols"><div><h4>What we treat</h4><ul>${g.w.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-  <div><h4>Signs parents notice</h4><ul>${g.n.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
-  ${g.u?`<div class="urgent">${g.u}</div>`:''}</article></section>`).join('');
-
-/* checklist */
-const CK=[[1,'Your child is much shorter than other children of the same age'],[1,'Height has stopped increasing, or growth has slowed down'],[3,'Puberty signs before 8 years in girls or 9 in boys'],[4,'No puberty signs by 13 in girls or 14 in boys'],[2,'A neck swelling, or an abnormal newborn thyroid test'],[6,'Heavy thirst, frequent urine or unexplained weight loss'],[6,'Rapid weight gain or dark velvety skin folds'],[7,'Bowed legs, bone pain or repeated fractures']];
-$('check').innerHTML=CK.map(([i,t])=>`<div><svg viewBox="-90 -70 180 140">${egg(G[i],'transform="rotate(180)"')}${icon(G[i]).replace('scale(1.5)','scale(1.25)')}</svg>${t}</div>`).join('');
-
-/* scroll-driven turning */
-const chs=[...document.querySelectorAll('.ch')],pbs=[...document.querySelectorAll('.pb')];
-const rot=$('rot'),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let shown=-1,cur=0,target=0,raf=0;
-function progress(){
-  const mid=innerHeight*(innerWidth<=900?.62:.5);
-  let p=0;
-  chs.forEach((c,i)=>{const r=c.getBoundingClientRect();if(r.top<=mid)p=i+Math.min(1,(mid-r.top)/r.height)-.5});
-  return Math.max(0,Math.min(7,p));
+const tint=(hex,a)=>{const n=parseInt(hex.slice(1),16);const r=n>>16,g=n>>8&255,b=n&255;const m=x=>Math.round(x+(255-x)*(1-a));return `rgb(${m(r)},${m(g)},${m(b)})`};
+/* stipple dots, the HUTS shading texture */
+const DOTS='<defs><pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.6" cy="1.6" r="1.1" fill="#3f6b2b"/></pattern><pattern id="dotsL" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.6" cy="1.6" r="1.1" fill="#d4e69a" opacity=".7"/></pattern></defs>';
+function pebbleArt(g,size){ /* a pebble with its gland, line-drawn in forest green with lime and stipple */
+  return `<g transform="translate(110,104) rotate(-100) scale(${size})">
+    <path d="${EGG}" fill="${tint(g.c,.16)}" stroke="#0f2a10" stroke-width="2.6"/>
+    <path d="${EGG}" fill="url(#dots)" opacity=".55" clip-path="inset(0 0 0 30%)" transform="translate(10,8) scale(.86)"/>
+  </g>
+  <ellipse cx="110" cy="196" rx="62" ry="9" fill="#d4e69a"/><ellipse cx="110" cy="196" rx="62" ry="9" fill="url(#dots)" opacity=".35"/>
+  <g transform="translate(110,104)"><path d="${ICONS[g.k]}" fill="none" stroke="#0f2a10" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="scale(1.22)"/></g>
+  <circle cx="${170}" cy="38" r="6" fill="${g.c}"/>`;
 }
-function draw(){
-  const base=innerWidth<=900?90:0;
-  rot.setAttribute('transform',`rotate(${base-cur*45})`);
-  const act=Math.round(cur);
-  pbs.forEach((el,i)=>{
-    const d=Math.abs(i-cur),s=1+Math.max(0,1-d)*.42;
-    el.querySelector('.sc').setAttribute('transform',`scale(${s.toFixed(3)})`);
-    el.querySelector('.up').setAttribute('transform',`rotate(${-(i*45+base-cur*45)})`);
-    el.classList.toggle('dim',i!==act);
-  });
-  if(act!==shown){shown=act;$('hubN').textContent=`${act+1} of 8`;$('hubT').textContent=G[act].t;chs.forEach((c,i)=>c.classList.toggle('on',i===act))}
+/* carousel of conditions */
+$('cards').innerHTML=G.map((g,i)=>`<button class="card" style="--c:${g.c}" data-i="${i}"><svg viewBox="0 0 220 220" aria-hidden="true">${DOTS}${pebbleArt(g,1)}</svg><h3>${g.t}</h3><small>${g.s}</small></button>`).join('');
+$('footList').innerHTML=G.map((g,i)=>`<li><a href="#treat" data-open="${i}">${g.t}</a></li>`).join('');
+
+/* condition sheet */
+const dlg=$('cond');let lenis=null;
+function openCond(i){const g=G[i];dlg.style.setProperty('--c',g.c);$('condArt').innerHTML=DOTS+pebbleArt(g,1);$('condK').textContent=g.g;$('condT').textContent=g.t;
+  $('condB').innerHTML=`<p>${g.p}</p><div class="cols"><div><h4>What we treat</h4><ul>${g.w.map(x=>`<li>${x}</li>`).join('')}</ul></div><div><h4>Signs parents notice</h4><ul>${g.n.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>${g.u?`<div class="urgent">${g.u}</div>`:''}
+  <div style="margin-top:24px"><a class="cta" href="tel:+919850631399"><span class="pill">Call to book</span><span class="arr">${ARROW}</span></a></div>`;
+  if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');lenis&&lenis.stop()}
+function closeCond(){dlg.close?dlg.close():dlg.removeAttribute('open')}
+dlg.addEventListener('close',()=>lenis&&lenis.start());
+$('condX').addEventListener('click',closeCond);
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeCond()});
+let moved=false;
+$('cards').addEventListener('click',e=>{const b=e.target.closest('.card');if(b&&!moved)openCond(+b.dataset.i)});
+document.querySelectorAll('[data-open]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();openCond(+a.dataset.open)}));
+
+/* measuring cards */
+const M=[
+ {t:'Height and growth charts',p:'Plotted on IAP 2015 and WHO charts at every visit, so the trend is clear.',img:'measure-1',fb:'#e3ecd0',art:'chart'},
+ {t:"Parents' heights",p:"Your child's expected adult height is worked out from both parents' heights.",img:'measure-2',fb:'#d9e8e4',art:'family'},
+ {t:'Bone age',p:'A hand X-ray shows how mature the bones are, and how much growth is left.',img:'measure-3',fb:'#ece3d4',art:'hand'},
+ {t:'Blood tests, when needed',p:'Only the tests that answer a real question, explained before and after.',img:'measure-4',fb:'#e6e2ee',art:'tube'},
+];
+function smallArt(kind){
+  const S='stroke="#0f2a10" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+  const ground='<ellipse cx="200" cy="268" rx="120" ry="14" fill="#d4e69a"/><ellipse cx="200" cy="268" rx="120" ry="14" fill="url(#dots)" opacity=".3"/>';
+  if(kind==='chart')return ground+`<rect x="96" y="40" width="208" height="220" rx="10" fill="#fdfbf4" ${S}/>`+[0,1,2,3,4].map(i=>`<path d="M110 ${232-i*30} C 170 ${222-i*36}, 230 ${192-i*42}, 292 ${172-i*44}" stroke="#3f6b2b" stroke-width="1.4" fill="none" opacity=".55"/>`).join('')+`<path d="M120 214 L150 198 L182 182 L214 170 L248 152" ${S}/>`+[[120,214],[150,198],[182,182],[214,170],[248,152]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="7" fill="#d4e69a" stroke="#0f2a10" stroke-width="2.2"/>`).join('');
+  if(kind==='family')return ground+`<g ${S}><circle cx="132" cy="70" r="20" fill="#d4e69a"/><path d="M104 266 L108 132 C 108 104, 156 104, 158 132 L 160 266"/><circle cx="262" cy="92" r="18" fill="#fdfbf4"/><path d="M238 266 L240 148 C 240 122, 284 122, 286 148 L 288 266"/><circle cx="198" cy="170" r="14" fill="#d4e69a"/><path d="M182 266 L184 202 C 184 184, 214 184, 214 202 L 214 266"/></g><path d="M80 112 H 318" stroke="#3f6b2b" stroke-width="2" stroke-dasharray="5 7"/><path d="M198 120 V 150" stroke="#3f6b2b" stroke-width="2" stroke-dasharray="4 5"/>`;
+  if(kind==='hand')return ground+`<rect x="112" y="34" width="176" height="226" rx="12" fill="#0f2a10"/>`+[[150,92,'-14'],[178,70,'-5'],[204,64,'2'],[230,72,'9'],[252,104,'22']].map(([x,y,r])=>`<g transform="rotate(${r} ${x} 200)" stroke="#d4e69a" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M${x} ${y} v22 M${x} ${y+30} v26 M${x} ${y+64} v40"/></g>`).join('')+`<path d="M160 214 C 170 238, 236 240, 246 214" stroke="#d4e69a" stroke-width="2.4" fill="none"/><circle cx="270" cy="54" r="4" fill="#d4e69a"/>`;
+  return ground+`<g ${S}><path d="M176 40 H 224 M184 40 V 214 C 184 240, 216 240, 216 214 V 40"/></g><path d="M186 140 H 214 V 214 C 214 236, 186 236, 186 214 Z" fill="#d4e69a"/><path d="M186 140 H 214 V 214 C 214 236, 186 236, 186 214 Z" fill="url(#dots)" opacity=".35"/><path d="M276 96 C 262 118, 262 132, 276 132 C 290 132, 290 118, 276 96 Z" fill="#8c2611" stroke="#0f2a10" stroke-width="2.2"/><path d="M118 220 l10-10 m-10 0 l10 10" stroke="#3f6b2b" stroke-width="2"/>`;
 }
-function tick(){cur+=(target-cur)*(reduce?1:.14);if(Math.abs(target-cur)<.002)cur=target;draw();raf=cur!==target?requestAnimationFrame(tick):0}
-function onScroll(){target=reduce?Math.round(progress()):progress();if(!raf)raf=requestAnimationFrame(tick)}
-addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
-onScroll();draw();
-/* tapping a pebble jumps to its chapter */
-pbs.forEach(el=>{el.style.cursor='pointer';el.addEventListener('click',()=>chs[+el.dataset.i].scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'}))});
+$('measure').innerHTML=M.map(m=>`<article class="mcard"><div class="slot" data-img="images/${m.img}.jpg" style="--fb:${m.fb}"><svg class="art" viewBox="0 0 400 310" aria-hidden="true">${DOTS}${smallArt(m.art)}</svg><img class="ph" alt="${m.t}"><span class="tag">images/${m.img}.jpg</span></div><h3>${m.t}</h3><p>${m.p}</p></article>`).join('');
+
+/* signs list */
+const SG=[[0,'Much shorter than other children of the same age'],[0,'Height has stopped increasing, or growth has slowed'],[3,'Puberty signs before 8 in girls or 9 in boys'],[2,'No puberty signs by 13 in girls or 14 in boys'],[1,'A neck swelling, or an abnormal newborn thyroid test'],[4,'Heavy thirst, frequent urine or weight loss'],[4,'Rapid weight gain or dark velvety skin folds'],[5,'Bowed legs, bone pain or repeated fractures']];
+$('signs').innerHTML=SG.map(([i,t])=>`<li class="rv"><svg viewBox="-90 -72 180 144" aria-hidden="true"><path d="${EGG}" transform="rotate(-100) scale(.95)" fill="${G[i].c}"/><path d="${ICONS[G[i].k]}" fill="none" stroke="#fdfbf4" stroke-width="5" stroke-linecap="round" transform="scale(1.2)"/></svg>${t}</li>`).join('');
+
+/* illustrated fallbacks for photo slots */
+const ring=(cx,cy,R,sc,col)=>G.map((g,i)=>{const a=i*45-90,r=a*Math.PI/180,x=cx+R*Math.cos(r),y=cy+R*Math.sin(r);return `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><path d="${EGG}" transform="rotate(${a+180}) scale(${sc})" fill="${col==='fill'?g.c:'none'}" stroke="${col==='fill'?'none':col}" stroke-width="2"/><path d="${ICONS[g.k]}" fill="none" stroke="${col==='fill'?'#fdfbf4':col}" stroke-width="${col==='fill'?3:2}" stroke-linecap="round" transform="scale(${sc*1.3})"/></g>`}).join('');
+$('heroArt').innerHTML=DOTS+`<rect width="1600" height="900" fill="#14321a"/><radialGradient id="hg" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#2f5a2a"/><stop offset="1" stop-color="#0c2410"/></radialGradient><rect width="1600" height="900" fill="url(#hg)"/><g opacity=".22">${ring(800,470,420,1.25,'#d4e69a')}</g><g opacity=".1">${ring(800,470,620,1.6,'#d4e69a')}</g><rect y="700" width="1600" height="200" fill="url(#dotsL)" opacity=".12"/>`;
+document.querySelectorAll('[data-fill]').forEach(s=>{const f=s.dataset.fill;
+  if(f==='ring')s.innerHTML=`<g opacity=".95">${ring(200,200,130,.7,'fill')}</g><text x="200" y="196" text-anchor="middle" font-family="Newsreader,serif" font-size="30" fill="#fdfbf4">Peds Endo</text><text x="200" y="228" text-anchor="middle" font-family="Newsreader,serif" font-style="italic" font-size="26" fill="#d4e69a">Clinic</text>`;
+  else if(f==='logo')s.innerHTML=DOTS+`<g>${ring(200,200,126,.66,'fill')}</g><circle cx="200" cy="200" r="70" fill="#fdfbf4"/><text x="200" y="196" text-anchor="middle" font-family="Newsreader,serif" font-size="22" fill="#0f2a10">Dr. Dhawle</text><text x="200" y="222" text-anchor="middle" font-family="Instrument Sans,sans-serif" font-size="12" fill="#5e463e">Peds Endo Clinic</text>`;
+  else{const g=G.find(x=>x.k===f);s.innerHTML=DOTS+`<g transform="translate(90,90) scale(1)">${pebbleArt(g,1)}</g>`}});
+document.querySelectorAll('[data-panel]').forEach(s=>{const k=+s.dataset.panel,cols=[['#1c1a52','#2c2a7a'],['#1b6b6e','#13504f'],['#4b1939','#6a2650']][k],g=[G[0],G[1],G[4]][k];
+  s.innerHTML=DOTS+`<linearGradient id="pg${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${cols[1]}"/><stop offset="1" stop-color="${cols[0]}"/></linearGradient><rect width="1600" height="900" fill="url(#pg${k})"/><g transform="translate(1180,360) rotate(-100) scale(4.4)" opacity=".16"><path d="${EGG}" fill="none" stroke="#d4e69a" stroke-width="1"/></g><g transform="translate(1180,360)" opacity=".5"><path d="${ICONS[g.k]}" fill="none" stroke="#d4e69a" stroke-width="2.4" stroke-linecap="round" transform="scale(5)"/></g><rect x="0" y="0" width="1600" height="900" fill="url(#dotsL)" opacity=".05"/>`});
+$('chartIllo').innerHTML=DOTS+`<ellipse cx="260" cy="440" rx="200" ry="18" fill="#d4e69a"/><ellipse cx="260" cy="440" rx="200" ry="18" fill="url(#dots)" opacity=".3"/>
+ <rect x="60" y="20" width="400" height="400" rx="14" fill="#fdfbf4" stroke="#0f2a10" stroke-width="2.6"/>
+ ${[0,1,2,3,4,5,6].map(i=>`<path d="M84 ${386-i*36} C 200 ${370-i*44}, 300 ${320-i*50}, 436 ${296-i*52}" stroke="#3f6b2b" stroke-width="${i===3?2.2:1.2}" fill="none" opacity="${i===3?.9:.45}"/>`).join('')}
+ <path d="M110 352 L150 334 L196 310 L236 296 L282 270 L326 236" stroke="#0f2a10" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+ ${[[110,352],[150,334],[196,310],[236,296],[282,270],[326,236]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="8" fill="#d4e69a" stroke="#0f2a10" stroke-width="2.2"/>`).join('')}
+ <path d="M430 74 l-12 10 12 10 12-10z" fill="#d6a516" stroke="#0f2a10" stroke-width="2"/><path d="M430 50 V 118" stroke="#d6a516" stroke-width="6" stroke-linecap="round" opacity=".5"/>
+ <text x="412" y="140" text-anchor="end" font-family="Instrument Sans,sans-serif" font-size="13" fill="#5e463e">Expected from parents</text>
+ <g transform="translate(118,96)"><path d="${EGG}" transform="rotate(-100) scale(.42)" fill="#1d4a23"/><path d="${ICONS.pit}" fill="none" stroke="#fdfbf4" stroke-width="2" stroke-linecap="round" transform="scale(.6)"/></g>`;
+$('miniIllo').innerHTML=DOTS+`<ellipse cx="60" cy="104" rx="40" ry="6" fill="#0f2a10" opacity=".18"/><g transform="translate(60,56) rotate(-100) scale(.52)"><path d="${EGG}" fill="#fdfbf4" stroke="#0f2a10" stroke-width="4"/></g><g transform="translate(60,56)"><path d="${ICONS.pit}" fill="none" stroke="#0f2a10" stroke-width="2.4" stroke-linecap="round" transform="scale(.8)"/></g>`;
+
+/* load real photos where they exist */
+document.querySelectorAll('.slot[data-img]').forEach(s=>{const img=s.querySelector('img.ph');const t=new Image();t.onload=()=>{img.src=s.dataset.img;s.classList.add('has-img')};t.src=s.dataset.img});
+if(location.hash==='#photos')document.documentElement.classList.add('show-slots');
+
+/* header + mobile menu */
+const hdr=$('top'),sheet=$('sheet'),mb=$('menuBtn');
+const setHdr=()=>hdr.classList.toggle('solid',scrollY>innerHeight*.55);setHdr();addEventListener('scroll',setHdr,{passive:true});
+function menu(open){sheet.classList.toggle('open',open);sheet.setAttribute('aria-hidden',!open);mb.setAttribute('aria-expanded',open);if(open){lenis&&lenis.stop();$('menuClose').focus()}else{lenis&&lenis.start()}}
+mb.addEventListener('click',()=>menu(true));$('menuClose').addEventListener('click',()=>menu(false));
+sheet.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',()=>menu(false)));
+addEventListener('keydown',e=>{if(e.key==='Escape')menu(false)});
+
+/* carousels: drag on desktop, buttons, keys */
+function dragScroll(tr){let down=false,x0=0,s0=0;
+  tr.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;moved=false;x0=e.clientX;s0=tr.scrollLeft});
+  addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-x0;if(Math.abs(dx)>5){moved=true;tr.classList.add('drag')}tr.scrollLeft=s0-dx});
+  addEventListener('pointerup',()=>{if(!down)return;down=false;tr.classList.remove('drag');setTimeout(()=>moved=false,0)});
+  tr.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();step(tr,e.key==='ArrowRight'?1:-1)}})}
+function step(tr,d){const c=tr.firstElementChild;tr.scrollBy({left:d*(c.offsetWidth+16),behavior:'smooth'})}
+dragScroll($('cards'));dragScroll($('measure'));
+$('prev').addEventListener('click',()=>step($('cards'),-1));$('next').addEventListener('click',()=>step($('cards'),1));
+
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -10% 0px'});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* motion: smooth scroll, drawn arrows, fanned photo stack, stacking panels */
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stackCards=[...$('stack').children];
+const FAN=[{r:-9,x:-6,y:4},{r:5,x:5,y:-2},{r:-1.5,x:0,y:0}];
+if(reduce||!window.gsap){
+  stackCards.forEach((c,i)=>c.style.transform=`translate(${FAN[i].x}%,${FAN[i].y}%) rotate(${FAN[i].r}deg)`);
+}else{
+  gsap.registerPlugin(ScrollTrigger);
+  if(window.Lenis){lenis=new Lenis({lerp:.09,smoothWheel:true});lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id.length>1&&document.querySelector(id)&&!a.dataset.open){e.preventDefault();lenis.scrollTo(id,{offset:-80})}}))}
+  document.querySelectorAll('path.draw').forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.style.opacity=0;
+    gsap.to(p,{strokeDashoffset:0,opacity:1,ease:'none',scrollTrigger:{trigger:p.closest('svg'),start:'top 85%',end:'bottom 45%',scrub:.6}})});
+  gsap.fromTo(stackCards,{rotate:0,xPercent:0,yPercent:0},{rotate:i=>FAN[i].r,xPercent:i=>FAN[i].x,yPercent:i=>FAN[i].y,ease:'power2.out',
+    scrollTrigger:{trigger:'#stack',start:'top 80%',end:'center 45%',scrub:.8}});
+  document.querySelectorAll('.panel').forEach((p,i,all)=>{if(i===all.length-1)return;
+    gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true}})});
+  gsap.to('#heroArt',{yPercent:12,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+}
 }
 </script>
 </body>
