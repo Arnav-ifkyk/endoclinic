@@ -6,7 +6,7 @@ window.ENDO_CONFIG = {
   //    Supabase → Project Settings → API.  Leave empty to run in
   //    "demo mode" (data saved on this phone only).
   supabaseUrl: 'https://rquttouddmbksbitrykf.supabase.co',
-  supabaseAnonKey: 'sb_publishable_BPAfRaRk7Z_JAasDQqvbcA_4LiGALsr',
+  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxdXR0b3VkZG1ia3NiaXRyeWtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU3MDkyMTYsImV4cCI6MjExMTI4NTIxNn0.GPsnMmbbErxf4icfNDthxJ7Z-LpgGi_R7z0CwfkY3uI',
 
   // 2) Letterhead printed on the OPD sheet
   clinic: {
