@@ -5,8 +5,8 @@ window.ENDO_CONFIG = {
   // 1) Supabase (online storage). Copy these two values from
   //    Supabase → Project Settings → API.  Leave empty to run in
   //    "demo mode" (data saved on this phone only).
-  supabaseUrl: '',
-  supabaseAnonKey: '',
+  supabaseUrl: 'https://rquttouddmbksbitrykf.supabase.co/rest/v1/',
+  supabaseAnonKey: 'sb_publishable_BPAfRaRk7Z_JAasDQqvbcA_4LiGALsr',
 
   // 2) Letterhead printed on the OPD sheet
   clinic: {
