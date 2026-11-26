@@ -16,6 +16,8 @@ test('capture dark theme screenshots at 390x844', async ({ page }) => {
   await page.waitForSelector('#menuBtn');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.click('#menuBtn');
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: path.join(OUT_DIR, 'mobile-menu.png') });
   await page.click('#sheet a[href="app.html"]');
   await page.waitForSelector('.login h1');
   await page.evaluate(() => document.fonts.ready);
