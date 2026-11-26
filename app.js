@@ -9,7 +9,9 @@
   const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const nice = s => { if (!s) return '—'; const [y, m, d] = s.split('-'); return `${+d} ${MON[+m - 1]} ${y}`; };
-  const initials = n => (n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  const avatarSvg = sex => sex === 'F'
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-label="Girl"><circle cx="12" cy="8.5" r="3.6"/><path d="M7.5 11.5c-.6-3.2 1.2-6.5 4.5-6.5s5.1 3.3 4.5 6.5"/><path d="M5 20.5c0-3.5 3.1-5.8 7-5.8s7 2.3 7 5.8"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-label="Boy"><circle cx="12" cy="8.5" r="3.8"/><path d="M8.8 6.2c1.4-1 4.8-1.2 6.4.4"/><path d="M5 20.5c0-3.5 3.1-5.8 7-5.8s7 2.3 7 5.8"/></svg>';
 
   const I = {
     back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
@@ -218,7 +220,7 @@
     const a = lv ? G.analyse(p, lv) : null;
     const age = G.ageText(G.ageYears(p.dob, today()));
     const badge = extraBadge || (a && a.hSds != null ? `<span class="chip ${a.hSds < -2 ? 'warn' : ''}">Ht ${sd(a.hSds)}</span>` : '');
-    return `<li class="pcard" data-act="open" data-id="${p.id}"><div class="pebble ${p.sex}"><span>${esc(initials(p.name))}</span></div>
+    return `<li class="pcard" data-act="open" data-id="${p.id}"><div class="pebble ${p.sex}">${avatarSvg(p.sex)}</div>
       <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${age} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · ${lv ? 'Last seen ' + nice(lv.date) : 'No visits yet'}</div></div>${badge}</li>`;
   }
 
@@ -339,9 +341,8 @@
     const flags = lv ? G.clinicalFlags(p, vs, lv, { hvThreshold: (S.state.settings && S.state.settings.hvThreshold) || 4 }) : [];
     const corrNote = a && a.isCorrected ? ` · Corrected ${a.ageText} (Chrono ${a.chronoAgeText})` : '';
     return `<div class="top"><button class="iconbtn" data-act="home" aria-label="Back">${I.back}</button><div class="ttl"></div><button class="iconbtn" data-act="editPatient" data-id="${id}" aria-label="Edit patient">${I.edit}</button></div>
-      <div class="hero"><div class="hero-head"><div class="pebble-ring"><div class="pebble ${p.sex}"><span>${esc(initials(p.name))}</span></div></div><div><div class="nm">${esc(p.name)}</div>
-        <div class="meta">${ageNow} · ${p.sex === 'F' ? 'Girl' : 'Boy'} · Born ${nice(p.dob)}${p.phone ? ' · ' + esc(p.phone) : ''}</div></div></div>
-        <div class="chips">${p.code ? `<span class="chip">${esc(p.code)}</span>` : ''}${p.birth && p.birth.term === 'Preterm' && p.birth.gestWeeks ? `<span class="chip">Preterm ${esc(p.birth.gestWeeks)} wk</span>` : ''}${mph ? `<span class="chip gold">MPH ${n1(mph.value)} cm</span><span class="chip">Target ${n1(mph.low)}–${n1(mph.high)}</span>` : '<span class="chip">Parents’ heights not entered</span>'}</div></div>
+      <div class="hero"><div class="hero-head"><div class="pebble-ring"><div class="pebble ${p.sex}">${avatarSvg(p.sex)}</div></div><div><div class="nm">${esc(p.name)}</div>
+        <div class="meta">${ageNow}</div></div></div></div>
       <div style="margin-top:12px"><button class="cta gold" data-act="newVisit" data-id="${id}"><span class="plus">+</span>Add today’s visit</button></div>
       <div class="btnrow"><button class="btn" data-act="printOpd" data-id="${id}">${I.print}OPD sheet</button><button class="btn" data-act="printCharts" data-id="${id}" ${vs.length ? '' : 'disabled style="opacity:.5"'}>${I.chart}Growth charts</button></div>
       <div style="margin-top:8px"><button class="btn" style="width:100%" data-act="bookFor" data-id="${id}">${I.cal}Book appointment</button></div>
