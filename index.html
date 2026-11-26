@@ -516,6 +516,11 @@ if(reduce||!window.gsap){
   document.querySelectorAll('.panel').forEach((p,i,all)=>{if(i===all.length-1)return;
     gsap.to(p.querySelector('.slot'),{scale:.92,opacity:.55,ease:'none',scrollTrigger:{trigger:all[i+1],start:'top bottom',end:'top top',scrub:true}})});
   gsap.to('#heroArt',{yPercent:12,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  const cards=$('cards'),dist=()=>Math.max(0,cards.scrollWidth-cards.clientWidth);
+  if(dist()>0){
+    cards.style.scrollSnapType='none';
+    gsap.to(cards,{scrollLeft:dist,ease:'none',scrollTrigger:{trigger:'#treat',start:'top 76px',end:()=>'+='+Math.max(dist(),360),pin:true,scrub:.35,invalidateOnRefresh:true,anticipatePin:1}});
+  }
 }
 }
 </script>
