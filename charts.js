@@ -6,17 +6,25 @@
   const f1 = v => (Math.round(v * 10) / 10).toFixed(1);
 
   const THEME = {
-    screen: { grid: '#ede7d6', gridMajor: '#dbd2b8', axis: '#664a42', cent: '#7d6a60', median: '#0f2a10', text: '#664a42',
-      sdRed: '#8C2611', h: '#8C2611', w: '#1B6B6E', ba: '#1C1A52', mph: '#3f6b2b', ov: '#D6A516', ob: '#8C2611', bg: '#fdfbf4' },
-    print: { grid: '#e8dff2', gridMajor: '#c7b6dd', axis: '#2b1b3d', cent: '#6a568f', median: '#2b1b3d', text: '#3b2a57',
-      sdRed: '#c81e1e', h: '#c2410c', w: '#0f6b66', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
+    screen: {
+      M: { grid: '#d7e6f9', gridMajor: '#b2cef2', axis: '#1e3a6e', cent: '#4b6fa3', median: '#1d4ed8', text: '#1e3a6e',
+        sdRed: '#c81e1e', h: '#1d4ed8', w: '#0284c7', ba: '#1C1A52', mph: '#3f6b2b', ov: '#D6A516', ob: '#c81e1e', bg: '#f5f9ff' },
+      F: { grid: '#f7d6e3', gridMajor: '#eab4ca', axis: '#83214a', cent: '#a64d72', median: '#9d174d', text: '#752145',
+        sdRed: '#c81e1e', h: '#be185d', w: '#db2777', ba: '#1C1A52', mph: '#3f6b2b', ov: '#D6A516', ob: '#c81e1e', bg: '#fff7fa' },
+    },
+    print: {
+      M: { grid: '#dce9f9', gridMajor: '#b3cef0', axis: '#1e3a6e', cent: '#4b6fa3', median: '#1d4ed8', text: '#1e3a6e',
+        sdRed: '#c81e1e', h: '#1d4ed8', w: '#0284c7', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
+      F: { grid: '#f8dce7', gridMajor: '#eab5ca', axis: '#83214a', cent: '#a64d72', median: '#9d174d', text: '#752145',
+        sdRed: '#c81e1e', h: '#be185d', w: '#db2777', ba: '#1e3a8a', mph: '#a16207', ov: '#ea7a0c', ob: '#c81e1e', bg: '#ffffff' },
+    },
   };
 
   /**
    * opts: { measure: 'h'|'w'|'b'|'hw', sex, points: [{age, h, w, b, ba}], mph, x0, x1, y0, y1, W, H, mode: 'screen'|'print' }
    */
   function render(o) {
-    const T = THEME[o.mode || 'screen'];
+    const T = THEME[o.mode || 'screen'][o.sex === 'F' ? 'F' : 'M'];
     const W = o.W || 360, H = o.H || 300;
     const m = { l: o.mode === 'print' ? 40 : 38, r: o.mode === 'print' ? 42 : 44, t: 16, b: 30 };
     const pw = W - m.l - m.r, ph = H - m.t - m.b;
