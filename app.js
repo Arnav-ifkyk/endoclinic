@@ -37,6 +37,11 @@
     apDate: today(), apMonth: today().slice(0, 7), apView: 'day',
     bookTab: 'existing', bookPid: '', bookPickQ: '', prefillPatient: null,
   };
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (document.querySelector('.login')) render(true); });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; if (document.querySelector('.login')) render(true); });
+  const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
   let toastT;
   function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2200); }
   function modal(title, text, buttons) {
@@ -108,6 +113,7 @@
         <button class="cta" type="submit">Sign in</button>
       </form>
       <p class="fineprint" style="text-align:center">You stay signed in on this phone after the first time</p>
+      ${isStandalone() ? '' : `<button type="button" class="btn" style="width:100%;margin-top:14px" data-act="installApp">${I.down}Download app</button>`}
     </div>`;
   }
 
@@ -784,6 +790,19 @@
         render(true); break;
       }
       case 'zoomModal': openChartModal(id); break;
+      case 'installApp': {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(() => { deferredPrompt = null; render(true); });
+        } else {
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+          modal('Install Peds Endo Clinic',
+            isIOS ? 'In Safari, tap the Share button at the bottom and choose "Add to Home Screen".'
+              : 'Open your browser menu (⋮) and tap "Install app" or "Add to Home screen" to save this app on your device.',
+            [{ label: 'OK', value: true, cls: 'cta' }]);
+        }
+        break;
+      }
       case 'printOpd': printOpd(id); break;
       case 'printCharts': printCharts(id); break;
       case 'printBlank': window.Print.doPrint(window.Print.opdSheet(null, null, [])); break;
