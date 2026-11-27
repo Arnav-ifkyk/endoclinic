@@ -38,8 +38,8 @@
     bookTab: 'existing', bookPid: '', bookPickQ: '', prefillPatient: null,
   };
   let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (document.querySelector('.login')) render(true); });
-  window.addEventListener('appinstalled', () => { deferredPrompt = null; if (document.querySelector('.login')) render(true); });
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (ui.view === 'login' || ui.view === 'settings') render(true); });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; if (ui.view === 'login' || ui.view === 'settings') render(true); });
   const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 
   let toastT;
@@ -485,6 +485,7 @@
         <div class="row" data-act="exportJson"><span class="ic">${I.down}</span><div>Save a backup file<small>All patients and visits (send it to Google Drive or WhatsApp)</small></div></div>
         <div class="row" data-act="exportCsv"><span class="ic">${I.down}</span><div>Export to Excel (CSV)<small>One row per visit, with SDS</small></div></div>
         <div class="row" data-act="importJson"><span class="ic">${I.up}</span><div>Restore from a backup file<small>Adds records that are missing</small></div></div>
+        ${isStandalone() ? '' : `<div class="row" data-act="installApp"><span class="ic">${I.down}</span><div>Download app<small>Install on your phone or computer</small></div></div>`}
         ${S.cloudConfigured ? `<div class="row" data-act="logout"><span class="ic">${I.out}</span><div>Sign out</div></div>` : ''}
       </div>
       <input type="file" id="importFile" accept="application/json,.json" hidden>
